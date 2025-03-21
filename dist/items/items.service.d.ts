@@ -23,6 +23,7 @@ export declare class ItemsService {
     }): Promise<Item[]>;
     update(id: string, updateItemDto: UpdateItemDto): Promise<Item>;
     remove(id: string): Promise<Item>;
+    private getSampleItems;
     private checkDbConnectionStatus;
     private handleDatabaseError;
 }
