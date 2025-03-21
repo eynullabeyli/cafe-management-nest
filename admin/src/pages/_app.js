@@ -38,12 +38,6 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <>
-      {/* Loading animation */}
-      {isLoading && (
-        <div className="page-loader">
-          <div className="spinner"></div>
-        </div>
-      )}
       {getLayout(<Component {...pageProps} />)}
     </>
   );
