@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { fetchItems, fetchCategories, deleteItem } from '../../lib/api';
+import { fetchItems, fetchCategories, deleteItem, fetchItemsByCategory, searchItemsByName } from '../../lib/api';
 import Card from '../../components/Card';
 import Alert from '../../components/Alert';
 import { FiEdit, FiTrash2, FiPlus, FiSearch, FiFilter, FiX } from 'react-icons/fi';

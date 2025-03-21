@@ -21,7 +21,12 @@ export default function Dashboard() {
       try {
         setLoading(true);
         const data = await fetchStats();
-        setStats(data);
+        if (data) {
+          setStats(data);
+        } else {
+          console.warn('Stats data is null or undefined');
+          setError('Could not fetch statistics. Please try again later.');
+        }
       } catch (err) {
         console.error('Failed to load dashboard stats:', err);
         setError('Failed to load statistics. The API server might be unavailable.');

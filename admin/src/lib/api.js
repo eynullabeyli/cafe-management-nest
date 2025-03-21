@@ -16,12 +16,16 @@ const api = axios.create({
 const handleApiError = (error) => {
   console.error('API Error:', error.response || error);
   
+  // Return null instead of throwing, let the component handle the display
   if (error.response && error.response.data && error.response.data.message) {
-    throw new Error(error.response.data.message);
+    console.error('API Error Message:', error.response.data.message);
+    return null;
   } else if (error.message) {
-    throw new Error(error.message);
+    console.error('Error Message:', error.message);
+    return null;
   } else {
-    throw new Error('An unexpected error occurred');
+    console.error('Unexpected API error occurred');
+    return null;
   }
 };
 
@@ -163,14 +167,19 @@ export const fetchStats = async () => {
   // This is a placeholder function for fetching dashboard stats
   // In a real application, this would call a dedicated endpoint
   try {
-    const [categories, items] = await Promise.all([
-      fetchCategories(),
-      fetchItems()
+    const [categoriesResponse, itemsResponse] = await Promise.all([
+      fetchCategories().catch(() => []),
+      fetchItems().catch(() => [])
     ]);
     
-    const activeCategories = categories.filter(cat => cat.isActive);
-    const activeItems = items.filter(item => item.isActive);
-    const newItems = items.filter(item => item.isNew);
+    // Ensure we have arrays, even if API returns unexpected data
+    const categories = Array.isArray(categoriesResponse) ? categoriesResponse : [];
+    const items = Array.isArray(itemsResponse) ? itemsResponse : [];
+    
+    // Safely filter with null checks
+    const activeCategories = categories.filter(cat => cat && cat.isActive);
+    const activeItems = items.filter(item => item && item.isActive);
+    const newItems = items.filter(item => item && item.isNew);
     
     return {
       totalCategories: categories.length,
@@ -180,6 +189,14 @@ export const fetchStats = async () => {
       newItems: newItems.length
     };
   } catch (error) {
-    handleApiError(error);
+    console.error('Error fetching stats:', error);
+    // Return default empty stats instead of throwing
+    return {
+      totalCategories: 0,
+      activeCategories: 0,
+      totalItems: 0,
+      activeItems: 0,
+      newItems: 0
+    };
   }
 };
