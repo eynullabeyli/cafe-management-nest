@@ -1,8 +1,12 @@
 import axios from 'axios';
 
 // Create an axios instance with base URL and default headers
+const isClient = typeof window !== 'undefined';
+
+// On the client-side, we'll use the relative URL to let Next.js handle rewrites
+// On the server-side, we'll use the absolute URL
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api',
+  baseURL: isClient ? '/api' : (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'),
   headers: {
     'Content-Type': 'application/json',
   },
