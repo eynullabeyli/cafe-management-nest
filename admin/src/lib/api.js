@@ -56,10 +56,10 @@ const getApiBaseUrl = () => {
     
     // If we're in Replit preview environment
     if (replitHostname.includes('.replit.dev') || replitHostname.includes('.repl.co')) {
-      // In Replit, we can use a simpler approach
-      // Just replace the port in the current hostname
-      const apiUrl = `${window.location.protocol}//${window.location.hostname.replace('3000', '5000')}/api`;
-      console.log('Using direct Replit API URL:', apiUrl);
+      // In Replit, use the same host with the API prefix
+      // This will be properly forwarded by the rewrites in next.config.js
+      const apiUrl = `/api`;
+      console.log('Using Replit API URL:', apiUrl);
       return apiUrl;
     }
     

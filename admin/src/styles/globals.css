@@ -230,6 +230,8 @@
   --gray-900: #111827;
   --danger: #dc2626;
   --danger-dark: #b91c1c;
+  --success-color: #10b981;
+  --success-color-dark: #059669;
 }
 
 /* Reset and base styles */
