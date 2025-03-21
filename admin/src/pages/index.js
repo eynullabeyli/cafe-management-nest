@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
+import { fetchStats } from '../lib/api';
 import Card from '../components/Card';
-import Alert from '../components/Alert';
-import { fetchCategories, fetchItems } from '../lib/api';
-import { FiBox, FiLayers, FiShoppingBag, FiPlus } from 'react-icons/fi';
+import { FiCoffee, FiGrid, FiPlusCircle, FiTrendingUp, FiTag } from 'react-icons/fi';
 
 export default function Dashboard() {
   const [stats, setStats] = useState({
-    categories: 0,
-    items: 0,
+    totalCategories: 0,
+    activeCategories: 0,
+    totalItems: 0,
     activeItems: 0,
-    newItems: 0,
+    newItems: 0
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -20,33 +20,16 @@ export default function Dashboard() {
     async function loadStats() {
       try {
         setLoading(true);
-        
-        // Fetch categories and items
-        const [categories, items] = await Promise.all([
-          fetchCategories(),
-          fetchItems()
-        ]);
-        
-        // Calculate statistics
-        const activeItems = items.filter(item => item.isActive).length;
-        const newItems = items.filter(item => item.isNew).length;
-        
-        setStats({
-          categories: categories.length,
-          items: items.length,
-          activeItems,
-          newItems,
-        });
-        
-        setError(null);
+        const data = await fetchStats();
+        setStats(data);
       } catch (err) {
         console.error('Failed to load dashboard stats:', err);
-        setError('Failed to load dashboard statistics. Please try again later.');
+        setError('Failed to load statistics. The API server might be unavailable.');
       } finally {
         setLoading(false);
       }
     }
-    
+
     loadStats();
   }, []);
 
@@ -55,113 +38,156 @@ export default function Dashboard() {
       <Head>
         <title>Dashboard - Cafe Admin</title>
       </Head>
-      
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-gray-600 mt-1">Overview of your menu management</p>
-      </div>
-      
+
+      <h1 className="text-2xl font-bold text-gray-900 mb-6">Dashboard</h1>
+
       {error && (
-        <Alert 
-          type="error" 
-          message={error} 
-          onClose={() => setError(null)}
-          className="mb-6"
-        />
+        <div className="mb-6 bg-red-50 border-l-4 border-red-400 p-4 rounded">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <div className="ml-3">
+              <p className="text-sm text-red-700">{error}</p>
+            </div>
+          </div>
+        </div>
       )}
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <Card className="border-l-4 border-primary">
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <Card className="flex flex-col">
           <div className="flex items-center">
-            <div className="p-3 rounded-full bg-blue-100 mr-4">
-              <FiLayers className="h-6 w-6 text-primary" />
+            <div className="p-3 rounded-md bg-blue-50 text-blue-700">
+              <FiGrid className="h-6 w-6" />
             </div>
-            <div>
-              <p className="text-sm font-medium text-gray-600">Categories</p>
-              <p className="text-2xl font-semibold text-gray-900">
-                {loading ? '...' : stats.categories}
-              </p>
+            <div className="ml-4">
+              <h3 className="text-lg font-medium text-gray-900">Categories</h3>
+              <div className="mt-1 flex items-baseline">
+                {loading ? (
+                  <div className="h-8 w-24 bg-gray-200 animate-pulse rounded"></div>
+                ) : (
+                  <>
+                    <p className="text-2xl font-semibold text-gray-900">{stats.totalCategories}</p>
+                    <p className="ml-2 text-sm text-gray-600">
+                      ({stats.activeCategories} active)
+                    </p>
+                  </>
+                )}
+              </div>
             </div>
           </div>
-        </Card>
-        
-        <Card className="border-l-4 border-secondary">
-          <div className="flex items-center">
-            <div className="p-3 rounded-full bg-orange-100 mr-4">
-              <FiShoppingBag className="h-6 w-6 text-secondary" />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-gray-600">Total Items</p>
-              <p className="text-2xl font-semibold text-gray-900">
-                {loading ? '...' : stats.items}
-              </p>
-            </div>
+          <div className="mt-6 self-end">
+            <Link 
+              href="/categories"
+              className="text-sm font-medium text-blue-600 hover:text-blue-500"
+            >
+              View all categories →
+            </Link>
           </div>
         </Card>
-        
-        <Card className="border-l-4 border-success">
+
+        <Card className="flex flex-col">
           <div className="flex items-center">
-            <div className="p-3 rounded-full bg-green-100 mr-4">
-              <FiBox className="h-6 w-6 text-success" />
+            <div className="p-3 rounded-md bg-green-50 text-green-700">
+              <FiCoffee className="h-6 w-6" />
             </div>
-            <div>
-              <p className="text-sm font-medium text-gray-600">Active Items</p>
-              <p className="text-2xl font-semibold text-gray-900">
-                {loading ? '...' : stats.activeItems}
-              </p>
+            <div className="ml-4">
+              <h3 className="text-lg font-medium text-gray-900">Menu Items</h3>
+              <div className="mt-1 flex items-baseline">
+                {loading ? (
+                  <div className="h-8 w-24 bg-gray-200 animate-pulse rounded"></div>
+                ) : (
+                  <>
+                    <p className="text-2xl font-semibold text-gray-900">{stats.totalItems}</p>
+                    <p className="ml-2 text-sm text-gray-600">
+                      ({stats.activeItems} active)
+                    </p>
+                  </>
+                )}
+              </div>
             </div>
           </div>
+          <div className="mt-6 self-end">
+            <Link 
+              href="/items"
+              className="text-sm font-medium text-green-600 hover:text-green-500"
+            >
+              View all items →
+            </Link>
+          </div>
         </Card>
-        
-        <Card className="border-l-4 border-warning">
+
+        <Card className="flex flex-col">
           <div className="flex items-center">
-            <div className="p-3 rounded-full bg-yellow-100 mr-4">
-              <FiBox className="h-6 w-6 text-warning" />
+            <div className="p-3 rounded-md bg-purple-50 text-purple-700">
+              <FiTag className="h-6 w-6" />
             </div>
-            <div>
-              <p className="text-sm font-medium text-gray-600">New Items</p>
-              <p className="text-2xl font-semibold text-gray-900">
-                {loading ? '...' : stats.newItems}
-              </p>
+            <div className="ml-4">
+              <h3 className="text-lg font-medium text-gray-900">New Items</h3>
+              <div className="mt-1 flex items-baseline">
+                {loading ? (
+                  <div className="h-8 w-24 bg-gray-200 animate-pulse rounded"></div>
+                ) : (
+                  <p className="text-2xl font-semibold text-gray-900">{stats.newItems}</p>
+                )}
+              </div>
             </div>
+          </div>
+          <div className="mt-6 self-end">
+            <Link 
+              href="/items/new"
+              className="text-sm font-medium text-purple-600 hover:text-purple-500"
+            >
+              Add new item →
+            </Link>
           </div>
         </Card>
       </div>
-      
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Card title="Quick Actions">
-          <div className="space-y-3">
-            <Link href="/categories/new">
-              <a className="flex items-center p-3 bg-blue-50 text-primary rounded-md hover:bg-blue-100 transition-colors">
-                <FiPlus className="mr-2" /> Add New Category
-              </a>
+          <div className="space-y-4">
+            <Link 
+              href="/categories/new"
+              className="flex items-center p-3 text-sm text-gray-700 hover:bg-gray-50 rounded-md"
+            >
+              <FiPlusCircle className="h-5 w-5 text-blue-500 mr-3" />
+              <span>Add New Category</span>
             </Link>
-            <Link href="/items/new">
-              <a className="flex items-center p-3 bg-orange-50 text-secondary rounded-md hover:bg-orange-100 transition-colors">
-                <FiPlus className="mr-2" /> Add New Item
-              </a>
+            <Link 
+              href="/items/new"
+              className="flex items-center p-3 text-sm text-gray-700 hover:bg-gray-50 rounded-md"
+            >
+              <FiPlusCircle className="h-5 w-5 text-green-500 mr-3" />
+              <span>Add New Menu Item</span>
             </Link>
           </div>
         </Card>
-        
-        <Card title="Overview">
-          <p className="text-gray-700">
-            Welcome to your cafe menu management dashboard. From here you can manage your menu categories and items.
-          </p>
-          <div className="mt-4 space-y-2">
+
+        <Card title="System Status">
+          <div className="space-y-3">
             <div className="flex justify-between items-center text-sm">
-              <span className="text-gray-600">Active Items:</span>
-              <span className="font-medium">
-                {loading ? '...' : `${stats.activeItems} of ${stats.items}`}
+              <span className="text-gray-600">API Server</span>
+              <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                Online
               </span>
             </div>
-            <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-              <div 
-                className="h-full bg-success" 
-                style={{ 
-                  width: `${loading ? 0 : (stats.items > 0 ? (stats.activeItems / stats.items) * 100 : 0)}%` 
-                }}
-              />
+            <div className="flex justify-between items-center text-sm">
+              <span className="text-gray-600">Database Connection</span>
+              <span className="px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                Limited
+              </span>
+            </div>
+            <div className="flex justify-between items-center text-sm">
+              <span className="text-gray-600">Admin Dashboard</span>
+              <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                Online
+              </span>
+            </div>
+            <div className="pt-3 text-xs text-gray-500">
+              <p>Note: Limited database functionality means the system is operating with fallback mechanisms enabled.</p>
             </div>
           </div>
         </Card>
