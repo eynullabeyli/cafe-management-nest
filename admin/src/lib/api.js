@@ -51,10 +51,22 @@ const getApiBaseUrl = () => {
   if (isClient) {
     console.log('Current hostname:', window.location.hostname);
     
-    // Use relative URL for the API to leverage Next.js rewrites
-    // This works in all environments (local, Replit, production)
+    // First check: Are we in Replit's domain?
+    const isReplitDomain = window.location.hostname.includes('replit.dev') || 
+                          window.location.hostname.includes('replit.app');
+    
+    if (isReplitDomain) {
+      // Use internal Replit connection for direct communication
+      // This bypasses Next.js rewrites and connects directly to the NestJS server
+      const directApiUrl = 'http://172.31.128.44:5000/api';
+      console.log('Using direct API URL in Replit:', directApiUrl);
+      return directApiUrl;
+    }
+    
+    // Default case: Use relative URL for the API to leverage Next.js rewrites
+    // This works in most environments (local, standard hosting)
     const apiUrl = '/api';
-    console.log('Using API URL:', apiUrl);
+    console.log('Using API URL through Next.js rewrite:', apiUrl);
     return apiUrl;
   }
   

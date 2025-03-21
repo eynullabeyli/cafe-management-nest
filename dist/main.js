@@ -30,10 +30,18 @@ async function bootstrap() {
         clearTimeout(timeout);
         appStarted = true;
         app.enableCors({
-            origin: true,
+            origin: [
+                'http://localhost:3000',
+                'http://172.31.128.44:3000',
+                /\.replit\.dev$/,
+                /\.replit\.app$/,
+                'https://f983daf1-bd62-47b0-b629-26314f3bcb7a-00-s70cy84odon4.picard.replit.dev'
+            ],
             methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
             credentials: true,
             allowedHeaders: 'Authorization,Accept,Origin,DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range',
+            preflightContinue: false,
+            optionsSuccessStatus: 204
         });
         logger.log('Setting global prefix...');
         app.setGlobalPrefix('api');
@@ -80,10 +88,18 @@ async function startMinimalAppWithoutDatabase() {
     });
     app.useLogger(app.get(common_1.Logger));
     app.enableCors({
-        origin: true,
+        origin: [
+            'http://localhost:3000',
+            'http://172.31.128.44:3000',
+            /\.replit\.dev$/,
+            /\.replit\.app$/,
+            'https://f983daf1-bd62-47b0-b629-26314f3bcb7a-00-s70cy84odon4.picard.replit.dev'
+        ],
         methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
         credentials: true,
         allowedHeaders: 'Authorization,Accept,Origin,DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range',
+        preflightContinue: false,
+        optionsSuccessStatus: 204
     });
     app.setGlobalPrefix('api');
     app.useGlobalFilters(new http_exception_filter_1.HttpExceptionFilter());

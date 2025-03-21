@@ -11,7 +11,7 @@ const nextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: 'http://127.0.0.1:5000/api/:path*',
+        destination: 'http://172.31.128.44:5000/api/:path*', // Use Replit internal IP
       },
     ];
   },
@@ -36,7 +36,11 @@ const nextConfig = {
   
   // The critical configuration for cross-origin access in Replit
   experimental: {
-    allowedDevOrigins: ["*"],
+    allowedDevOrigins: [
+      "https://f983daf1-bd62-47b0-b629-26314f3bcb7a-00-s70cy84odon4.picard.replit.dev",
+      "https://*.replit.dev",
+      "https://*.replit.app",
+    ],
   },
   
   // Optimize image loading
