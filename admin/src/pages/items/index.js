@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import { fetchItems, fetchCategories, deleteItem, fetchItemsByCategory, searchItemsByName } from '../../lib/api';
 import Card from '../../components/Card';
 import Alert from '../../components/Alert';
-import { FiEdit, FiTrash2, FiPlus, FiSearch, FiFilter, FiX } from 'react-icons/fi';
+import { FiEdit, FiTrash2, FiPlus, FiSearch, FiFilter, FiX, FiCoffee, FiDollarSign, FiTag } from 'react-icons/fi';
 
 export default function Items() {
   const router = useRouter();
@@ -365,91 +365,94 @@ export default function Items() {
           </Link>
         </div>
       ) : (
-        <div className="bg-white rounded-lg shadow overflow-hidden">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Item
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Category
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Price
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
-                </th>
-                <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {items.map((item) => (
-                <tr key={item._id} className={!item.isActive ? 'bg-gray-50' : ''}>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      {item.imageUrl ? (
-                        <div className="flex-shrink-0 h-10 w-10 mr-3">
-                          <img className="h-10 w-10 rounded-md object-cover" src={item.imageUrl} alt={item.name} />
-                        </div>
-                      ) : (
-                        <div className="flex-shrink-0 h-10 w-10 rounded-md bg-gray-200 flex items-center justify-center mr-3">
-                          <FiCoffee className="h-5 w-5 text-gray-500" />
-                        </div>
-                      )}
-                      <div>
-                        <div className="font-medium text-gray-900">
-                          {item.name}
-                          {item.isNew && (
-                            <span className="ml-2 px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                              NEW
-                            </span>
-                          )}
-                        </div>
-                        {item.description && (
-                          <div className="text-sm text-gray-500 max-w-xs truncate">
-                            {item.description}
-                          </div>
-                        )}
-                      </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {items.map((item) => (
+            <div 
+              key={item._id} 
+              className={`bg-white rounded-lg shadow overflow-hidden transition-all hover:shadow-md ${!item.isActive ? 'opacity-70' : ''}`}
+            >
+              <div className="relative">
+                {/* Image container with fixed height and proper styling for image */}
+                <div className="h-48 w-full bg-gray-100 relative overflow-hidden">
+                  {item.imageUrl ? (
+                    <img 
+                      className="absolute inset-0 w-full h-full object-cover object-center" 
+                      src={item.imageUrl} 
+                      alt={item.name}
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = ""; // Fallback to empty src
+                        e.target.classList.add("bg-gray-200");
+                        e.target.parentNode.classList.add("flex", "items-center", "justify-center");
+                        const icon = document.createElement("div");
+                        icon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8 text-gray-400"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg>';
+                        e.target.parentNode.appendChild(icon);
+                      }}
+                    />
+                  ) : (
+                    <div className="absolute inset-0 w-full h-full flex items-center justify-center bg-gray-200">
+                      <FiCoffee className="h-10 w-10 text-gray-400" />
                     </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {categoryMap[item.categoryUniqId] || 'Unknown'}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    ${item.price.toFixed(2)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                  )}
+                  
+                  {/* Status and New badges overlay */}
+                  <div className="absolute top-2 right-2 flex flex-col gap-2">
+                    {item.isNew && (
+                      <div className="px-2 py-1 text-xs font-bold rounded-md bg-green-100 text-green-800 shadow-sm">
+                        NEW
+                      </div>
+                    )}
+                    <div className={`px-2 py-1 text-xs font-bold rounded-md shadow-sm ${
                       item.isActive 
                         ? 'bg-green-100 text-green-800' 
                         : 'bg-gray-100 text-gray-800'
                     }`}>
-                      {item.isActive ? 'Active' : 'Inactive'}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      {item.isActive ? 'ACTIVE' : 'INACTIVE'}
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Content */}
+                <div className="p-4">
+                  <div className="flex justify-between items-start">
+                    <h3 className="text-lg font-medium text-gray-900 mb-1 truncate" title={item.name}>
+                      {item.name}
+                    </h3>
+                    <div className="flex items-center text-lg font-semibold text-green-600">
+                      <FiDollarSign className="h-4 w-4 inline mr-1" />
+                      {item.price.toFixed(2)}
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center text-sm text-gray-500 mb-2">
+                    <FiTag className="h-4 w-4 mr-1" />
+                    {categoryMap[item.categoryUniqId] || 'Unknown'}
+                  </div>
+                  
+                  {item.description && (
+                    <p className="text-sm text-gray-600 mb-4 line-clamp-2" title={item.description}>
+                      {item.description}
+                    </p>
+                  )}
+                  
+                  <div className="mt-4 flex justify-between items-center">
                     <Link
                       href={`/items/edit/${item._id}`}
-                      className="text-indigo-600 hover:text-indigo-900 mr-4"
+                      className="btn btn-sm btn-outline-primary"
                     >
-                      <FiEdit className="inline-block h-4 w-4" /> Edit
+                      <FiEdit className="mr-1" /> Edit
                     </Link>
                     <button
                       onClick={() => confirmDelete(item)}
-                      className="text-red-600 hover:text-red-900"
+                      className="btn btn-sm btn-outline-danger"
                     >
-                      <FiTrash2 className="inline-block h-4 w-4" /> Delete
+                      <FiTrash2 className="mr-1" /> Delete
                     </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       )}
 
