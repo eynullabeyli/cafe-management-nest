@@ -1,8 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  // Disable strict CORS in development mode
   transpilePackages: ['react-icons'],
+  
+  // Add correct allowed dev origins pattern
+  experimental: {
+    allowedDevOrigins: ['localhost', '.replit.dev'],
+  },
   
   // Proxy API requests to the NestJS server
   async rewrites() {
@@ -21,6 +25,8 @@ const nextConfig = {
         source: '/:path*',
         headers: [
           { key: 'Access-Control-Allow-Origin', value: '*' },
+          { key: 'Access-Control-Allow-Methods', value: 'GET,OPTIONS,PATCH,DELETE,POST,PUT' },
+          { key: 'Access-Control-Allow-Headers', value: 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version' },
         ],
       },
     ];

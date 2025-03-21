@@ -369,86 +369,85 @@ export default function Items() {
           {items.map((item) => (
             <div 
               key={item._id} 
-              className={`bg-white rounded-lg shadow overflow-hidden transition-all hover:shadow-md ${!item.isActive ? 'opacity-70' : ''}`}
+              className={`menu-item-card ${!item.isActive ? 'opacity-70' : ''}`}
             >
-              <div className="relative">
-                {/* Image container with fixed height and proper styling for image */}
-                <div className="h-48 w-full bg-gray-100 relative overflow-hidden">
-                  {item.imageUrl ? (
-                    <img 
-                      className="absolute inset-0 w-full h-full object-cover object-center" 
-                      src={item.imageUrl} 
-                      alt={item.name}
-                      onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src = ""; // Fallback to empty src
-                        e.target.classList.add("bg-gray-200");
-                        e.target.parentNode.classList.add("flex", "items-center", "justify-center");
-                        const icon = document.createElement("div");
-                        icon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8 text-gray-400"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg>';
-                        e.target.parentNode.appendChild(icon);
-                      }}
-                    />
-                  ) : (
-                    <div className="absolute inset-0 w-full h-full flex items-center justify-center bg-gray-200">
-                      <FiCoffee className="h-10 w-10 text-gray-400" />
+              <div className="menu-item-image">
+                {item.imageUrl ? (
+                  <img 
+                    src={item.imageUrl} 
+                    alt={item.name}
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.style.display = 'none';
+                      e.target.parentNode.innerHTML = `<div class="flex h-full w-full items-center justify-center bg-gray-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400">
+                          <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+                          <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+                          <line x1="6" y1="1" x2="6" y2="4"></line>
+                          <line x1="10" y1="1" x2="10" y2="4"></line>
+                          <line x1="14" y1="1" x2="14" y2="4"></line>
+                        </svg>
+                      </div>`;
+                    }}
+                  />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center bg-gray-200">
+                    <FiCoffee className="h-16 w-16 text-gray-400" />
+                  </div>
+                )}
+                
+                {/* Status and New badges overlay */}
+                <div className="menu-item-badges">
+                  {item.isNew && (
+                    <div className="menu-item-badge bg-green-100 text-green-800">
+                      NEW
                     </div>
                   )}
-                  
-                  {/* Status and New badges overlay */}
-                  <div className="absolute top-2 right-2 flex flex-col gap-2">
-                    {item.isNew && (
-                      <div className="px-2 py-1 text-xs font-bold rounded-md bg-green-100 text-green-800 shadow-sm">
-                        NEW
-                      </div>
-                    )}
-                    <div className={`px-2 py-1 text-xs font-bold rounded-md shadow-sm ${
-                      item.isActive 
-                        ? 'bg-green-100 text-green-800' 
-                        : 'bg-gray-100 text-gray-800'
-                    }`}>
-                      {item.isActive ? 'ACTIVE' : 'INACTIVE'}
-                    </div>
+                  <div className={`menu-item-badge ${
+                    item.isActive 
+                      ? 'bg-green-100 text-green-800' 
+                      : 'bg-gray-100 text-gray-800'
+                  }`}>
+                    {item.isActive ? 'ACTIVE' : 'INACTIVE'}
                   </div>
                 </div>
+              </div>
+              
+              {/* Content */}
+              <div className="menu-item-content">
+                <h3 className="menu-item-title" title={item.name}>
+                  {item.name}
+                </h3>
                 
-                {/* Content */}
-                <div className="p-4">
-                  <div className="flex justify-between items-start">
-                    <h3 className="text-lg font-medium text-gray-900 mb-1 truncate" title={item.name}>
-                      {item.name}
-                    </h3>
-                    <div className="flex items-center text-lg font-semibold text-green-600">
-                      <FiDollarSign className="h-4 w-4 inline mr-1" />
-                      {item.price.toFixed(2)}
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center text-sm text-gray-500 mb-2">
-                    <FiTag className="h-4 w-4 mr-1" />
-                    {categoryMap[item.categoryUniqId] || 'Unknown'}
-                  </div>
-                  
-                  {item.description && (
-                    <p className="text-sm text-gray-600 mb-4 line-clamp-2" title={item.description}>
-                      {item.description}
-                    </p>
-                  )}
-                  
-                  <div className="mt-4 flex justify-between items-center">
-                    <Link
-                      href={`/items/edit/${item._id}`}
-                      className="btn btn-sm btn-outline-primary"
-                    >
-                      <FiEdit className="mr-1" /> Edit
-                    </Link>
-                    <button
-                      onClick={() => confirmDelete(item)}
-                      className="btn btn-sm btn-outline-danger"
-                    >
-                      <FiTrash2 className="mr-1" /> Delete
-                    </button>
-                  </div>
+                <div className="menu-item-category">
+                  <FiTag className="mr-2" />
+                  {categoryMap[item.categoryUniqId] || 'Unknown'}
+                </div>
+                
+                {item.description && (
+                  <p className="menu-item-description" title={item.description}>
+                    {item.description}
+                  </p>
+                )}
+                
+                <div className="menu-item-price">
+                  <FiDollarSign className="mr-1" />
+                  {item.price.toFixed(2)}
+                </div>
+                
+                <div className="menu-item-actions">
+                  <Link
+                    href={`/items/edit/${item._id}`}
+                    className="btn btn-sm btn-outline-primary"
+                  >
+                    <FiEdit className="mr-1" /> Edit
+                  </Link>
+                  <button
+                    onClick={() => confirmDelete(item)}
+                    className="btn btn-sm btn-outline-danger"
+                  >
+                    <FiTrash2 className="mr-1" /> Delete
+                  </button>
                 </div>
               </div>
             </div>
