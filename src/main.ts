@@ -40,11 +40,18 @@ async function bootstrap() {
     // Enable CORS with specific configuration for Replit environment
     app.enableCors({
       origin: [
+        // Local development 
         'http://localhost:3000', 
+        // Replit internal IP
         'http://172.31.128.44:3000',
+        // All Replit domains with wildcards
         /\.replit\.dev$/,
         /\.replit\.app$/,
-        'https://f983daf1-bd62-47b0-b629-26314f3bcb7a-00-s70cy84odon4.picard.replit.dev'
+        // Specific Replit domain patterns
+        'https://f983daf1-bd62-47b0-b629-26314f3bcb7a-00-s70cy84odon4.picard.replit.dev',
+        // Direct Replit domain for the Next.js app
+        'https://f983daf1-bd62-47b0-b629-26314f3bcb7a.id.replit.dev',
+        '*'
       ],
       methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
       credentials: true,
@@ -116,11 +123,18 @@ async function startMinimalAppWithoutDatabase() {
   // Basic configuration with enhanced CORS - same as main app
   app.enableCors({
     origin: [
+      // Local development 
       'http://localhost:3000', 
+      // Replit internal IP
       'http://172.31.128.44:3000',
+      // All Replit domains with wildcards
       /\.replit\.dev$/,
       /\.replit\.app$/,
-      'https://f983daf1-bd62-47b0-b629-26314f3bcb7a-00-s70cy84odon4.picard.replit.dev'
+      // Specific Replit domain patterns
+      'https://f983daf1-bd62-47b0-b629-26314f3bcb7a-00-s70cy84odon4.picard.replit.dev',
+      // Direct Replit domain for the Next.js app
+      'https://f983daf1-bd62-47b0-b629-26314f3bcb7a.id.replit.dev',
+      '*'
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,

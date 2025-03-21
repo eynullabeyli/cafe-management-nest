@@ -35,7 +35,9 @@ async function bootstrap() {
                 'http://172.31.128.44:3000',
                 /\.replit\.dev$/,
                 /\.replit\.app$/,
-                'https://f983daf1-bd62-47b0-b629-26314f3bcb7a-00-s70cy84odon4.picard.replit.dev'
+                'https://f983daf1-bd62-47b0-b629-26314f3bcb7a-00-s70cy84odon4.picard.replit.dev',
+                'https://f983daf1-bd62-47b0-b629-26314f3bcb7a.id.replit.dev',
+                '*'
             ],
             methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
             credentials: true,
@@ -93,7 +95,9 @@ async function startMinimalAppWithoutDatabase() {
             'http://172.31.128.44:3000',
             /\.replit\.dev$/,
             /\.replit\.app$/,
-            'https://f983daf1-bd62-47b0-b629-26314f3bcb7a-00-s70cy84odon4.picard.replit.dev'
+            'https://f983daf1-bd62-47b0-b629-26314f3bcb7a-00-s70cy84odon4.picard.replit.dev',
+            'https://f983daf1-bd62-47b0-b629-26314f3bcb7a.id.replit.dev',
+            '*'
         ],
         methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
         credentials: true,

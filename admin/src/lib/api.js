@@ -48,15 +48,12 @@ export const apiLoadingState = {
 
 // Helper function to get API URL
 const getApiBaseUrl = () => {
+  // Get the current url from the window location
   if (isClient) {
     console.log('Current hostname:', window.location.hostname);
     
-    // Always use relative URL for the API to leverage Next.js rewrites
-    // This should work in all environments (local, Replit, production)
-    // The rewrite rule in next.config.js handles the actual routing
-    const apiUrl = '/api';
-    console.log('Using API URL through Next.js rewrite:', apiUrl);
-    return apiUrl;
+    // Use simple relative URLs which work with Replit's proxying
+    return '/api';
   }
   
   // On server-side in Next.js SSR context
