@@ -80,19 +80,26 @@ const Layout = ({ children }) => {
           overflow: 'hidden'
         }}
       >
-        {isLinkLoading && !active && (
-          <div className="nav-link-loading">
-            <FiLoader className="nav-link-spinner" />
-          </div>
+        {isLinkLoading && !active ? (
+          <FiLoader 
+            className="nav-link-inline-spinner"
+            style={{
+              marginRight: '0.75rem',
+              height: '1.25rem',
+              width: '1.25rem',
+              color: active ? 'white' : 'var(--primary-color)'
+            }}
+          />
+        ) : (
+          <Icon 
+            style={{
+              marginRight: '0.75rem',
+              height: '1.25rem',
+              width: '1.25rem',
+              color: active ? 'white' : 'var(--gray-400)'
+            }}
+          />
         )}
-        <Icon 
-          style={{
-            marginRight: '0.75rem',
-            height: '1.25rem',
-            width: '1.25rem',
-            color: active ? 'white' : 'var(--gray-400)'
-          }}
-        />
         {item.name}
       </Link>
     );
