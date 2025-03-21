@@ -66,6 +66,33 @@ export class ItemsController {
     );
   }
 
+  @Get('search/name')
+  @ApiOperation({ summary: 'Search items by name (case-insensitive)' })
+  @ApiQuery({ name: 'q', required: true, type: String, description: 'Search query string for item name' })
+  @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Number of items to return' })
+  @ApiQuery({ name: 'skip', required: false, type: Number, description: 'Number of items to skip' })
+  @ApiQuery({ name: 'activeOnly', required: false, type: Boolean, description: 'Filter active items only' })
+  @ApiResponse({ status: 200, description: 'Return the matching items.', type: [Item] })
+  @ApiResponse({ status: 503, description: 'Service unavailable. Database connection issues.' })
+  async searchByName(
+    @Query('q') query: string,
+    @Query('limit') limit?: number,
+    @Query('skip') skip?: number,
+    @Query('activeOnly') activeOnly?: boolean | string,
+  ): Promise<Item[]> {
+    if (!query || query.trim() === '') {
+      return [];
+    }
+    
+    const options = { 
+      limit: limit ? parseInt(limit.toString()) : undefined,
+      skip: skip ? parseInt(skip.toString()) : undefined,
+      activeOnly: activeOnly === true || activeOnly === 'true'
+    };
+    
+    return this.itemsService.searchByName(query, options);
+  }
+
   @Put(':id')
   @ApiOperation({ summary: 'Update an item' })
   @ApiParam({ name: 'id', description: 'The id of the item' })

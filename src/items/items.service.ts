@@ -102,6 +102,26 @@ export class ItemsService {
     }
   }
 
+  async searchByName(nameQuery: string, options: { limit?: number; skip?: number; activeOnly?: boolean } = {}): Promise<Item[]> {
+    this.checkDbConnectionStatus();
+    const { limit = 10, skip = 0, activeOnly = false } = options;
+    
+    try {
+      // Create a case-insensitive regular expression for the name search
+      const nameRegex = new RegExp(nameQuery, 'i');
+      
+      let query = this.itemModel.find({ name: nameRegex });
+      
+      if (activeOnly) {
+        query = query.where('isActive').equals(true);
+      }
+      
+      return await query.limit(limit).skip(skip).exec();
+    } catch (error) {
+      this.handleDatabaseError(error, `search items by name containing '${nameQuery}'`);
+    }
+  }
+
   async update(id: string, updateItemDto: UpdateItemDto): Promise<Item> {
     this.checkDbConnectionStatus();
     try {

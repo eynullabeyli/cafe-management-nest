@@ -9,6 +9,7 @@ export declare class ItemsController {
     findAll(limit?: number, skip?: number, activeOnly?: boolean | string): Promise<Item[]>;
     findOne(id: string): Promise<Item>;
     findByCategory(categoryUniqId: string, activeOnly?: boolean | string): Promise<Item[]>;
+    searchByName(query: string, limit?: number, skip?: number, activeOnly?: boolean | string): Promise<Item[]>;
     update(id: string, updateItemDto: UpdateItemDto): Promise<Item>;
     remove(id: string): Promise<Item>;
 }

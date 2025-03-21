@@ -101,6 +101,21 @@ let ItemsService = ItemsService_1 = class ItemsService {
             this.handleDatabaseError(error, `find items by category ${categoryUniqId}`);
         }
     }
+    async searchByName(nameQuery, options = {}) {
+        this.checkDbConnectionStatus();
+        const { limit = 10, skip = 0, activeOnly = false } = options;
+        try {
+            const nameRegex = new RegExp(nameQuery, 'i');
+            let query = this.itemModel.find({ name: nameRegex });
+            if (activeOnly) {
+                query = query.where('isActive').equals(true);
+            }
+            return await query.limit(limit).skip(skip).exec();
+        }
+        catch (error) {
+            this.handleDatabaseError(error, `search items by name containing '${nameQuery}'`);
+        }
+    }
     async update(id, updateItemDto) {
         this.checkDbConnectionStatus();
         try {

@@ -41,6 +41,17 @@ let ItemsController = class ItemsController {
     async findByCategory(categoryUniqId, activeOnly) {
         return this.itemsService.findByCategory(categoryUniqId, activeOnly === true || activeOnly === 'true');
     }
+    async searchByName(query, limit, skip, activeOnly) {
+        if (!query || query.trim() === '') {
+            return [];
+        }
+        const options = {
+            limit: limit ? parseInt(limit.toString()) : undefined,
+            skip: skip ? parseInt(skip.toString()) : undefined,
+            activeOnly: activeOnly === true || activeOnly === 'true'
+        };
+        return this.itemsService.searchByName(query, options);
+    }
     async update(id, updateItemDto) {
         return this.itemsService.update(id, updateItemDto);
     }
@@ -104,6 +115,24 @@ __decorate([
     __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", Promise)
 ], ItemsController.prototype, "findByCategory", null);
+__decorate([
+    (0, common_1.Get)('search/name'),
+    (0, swagger_1.ApiOperation)({ summary: 'Search items by name (case-insensitive)' }),
+    (0, swagger_1.ApiQuery)({ name: 'q', required: true, type: String, description: 'Search query string for item name' }),
+    (0, swagger_1.ApiQuery)({ name: 'limit', required: false, type: Number, description: 'Number of items to return' }),
+    (0, swagger_1.ApiQuery)({ name: 'skip', required: false, type: Number, description: 'Number of items to skip' }),
+    (0, swagger_1.ApiQuery)({ name: 'activeOnly', required: false, type: Boolean, description: 'Filter active items only' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Return the matching items.', type: [item_schema_1.Item] }),
+    (0, swagger_1.ApiResponse)({ status: 503, description: 'Service unavailable. Database connection issues.' }),
+    openapi.ApiResponse({ status: 200, type: [require("./schemas/item.schema").Item] }),
+    __param(0, (0, common_1.Query)('q')),
+    __param(1, (0, common_1.Query)('limit')),
+    __param(2, (0, common_1.Query)('skip')),
+    __param(3, (0, common_1.Query)('activeOnly')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Number, Number, Object]),
+    __metadata("design:returntype", Promise)
+], ItemsController.prototype, "searchByName", null);
 __decorate([
     (0, common_1.Put)(':id'),
     (0, swagger_1.ApiOperation)({ summary: 'Update an item' }),

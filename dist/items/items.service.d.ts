@@ -16,6 +16,11 @@ export declare class ItemsService {
     }): Promise<Item[]>;
     findOne(id: string): Promise<Item>;
     findByCategory(categoryUniqId: string, activeOnly?: boolean): Promise<Item[]>;
+    searchByName(nameQuery: string, options?: {
+        limit?: number;
+        skip?: number;
+        activeOnly?: boolean;
+    }): Promise<Item[]>;
     update(id: string, updateItemDto: UpdateItemDto): Promise<Item>;
     remove(id: string): Promise<Item>;
     private checkDbConnectionStatus;
