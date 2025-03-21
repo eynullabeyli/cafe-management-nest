@@ -45,6 +45,14 @@ export class CategoriesService {
 
   async create(createCategoryDto: CreateCategoryDto): Promise<Category> {
     this.checkDbConnectionStatus();
+    
+    if (!this.isDbConnected) {
+      this.logger.warn(`Database not connected. Create operations are not available in fallback mode.`);
+      throw new ServiceUnavailableException(
+        'Database connection is required for creating new categories. Please try again later when database connectivity is restored.'
+      );
+    }
+    
     try {
       const createdCategory = new this.categoryModel(createCategoryDto);
       return await createdCategory.save();
@@ -171,6 +179,14 @@ export class CategoriesService {
 
   async update(id: string, updateCategoryDto: UpdateCategoryDto): Promise<Category> {
     this.checkDbConnectionStatus();
+    
+    if (!this.isDbConnected) {
+      this.logger.warn(`Database not connected. Update operations are not available in fallback mode.`);
+      throw new ServiceUnavailableException(
+        'Database connection is required for update operations. Please try again later when database connectivity is restored.'
+      );
+    }
+    
     try {
       const updatedCategory = await this.categoryModel
         .findByIdAndUpdate(id, updateCategoryDto, { new: true })
@@ -189,6 +205,14 @@ export class CategoriesService {
 
   async remove(id: string): Promise<Category> {
     this.checkDbConnectionStatus();
+    
+    if (!this.isDbConnected) {
+      this.logger.warn(`Database not connected. Delete operations are not available in fallback mode.`);
+      throw new ServiceUnavailableException(
+        'Database connection is required for delete operations. Please try again later when database connectivity is restored.'
+      );
+    }
+    
     try {
       const deletedCategory = await this.categoryModel.findByIdAndDelete(id).exec();
       if (!deletedCategory) {
@@ -204,11 +228,9 @@ export class CategoriesService {
   }
   
   private checkDbConnectionStatus(): void {
+    // Instead of throwing an exception, just log a warning - fallback data will be used
     if (!this.isDbConnected) {
-      this.logger.error('Database operation attempted but database is not connected');
-      throw new ServiceUnavailableException(
-        'Database connection is currently unavailable. Please try again later or contact support.'
-      );
+      this.logger.warn('Database is not connected. Using fallback sample data.');
     }
   }
   

@@ -5,7 +5,15 @@ const nextConfig = {
   
   // Add specific allowed dev origins to match the Replit domain
   experimental: {
-    allowedDevOrigins: ['*', 'https://*.repl.co', 'https://*.replit.dev', 'https://*.replit.app', 'https://*.*.replit.dev', 'https://*.picard.replit.dev'],
+    allowedDevOrigins: [
+      '*',
+      'https://*.repl.co', 
+      'https://*.replit.dev', 
+      'https://*.replit.app', 
+      'https://*.*.replit.dev', 
+      'https://*.picard.replit.dev',
+      'https://f983daf1-bd62-47b0-b629-26314f3bcb7a-00-s70cy84odon4.picard.replit.dev'
+    ],
   },
   
   // Proxy API requests to the NestJS server

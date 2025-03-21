@@ -50,6 +50,10 @@ let CategoriesService = CategoriesService_1 = class CategoriesService {
     }
     async create(createCategoryDto) {
         this.checkDbConnectionStatus();
+        if (!this.isDbConnected) {
+            this.logger.warn(`Database not connected. Create operations are not available in fallback mode.`);
+            throw new common_1.ServiceUnavailableException('Database connection is required for creating new categories. Please try again later when database connectivity is restored.');
+        }
         try {
             const createdCategory = new this.categoryModel(createCategoryDto);
             return await createdCategory.save();
@@ -170,6 +174,10 @@ let CategoriesService = CategoriesService_1 = class CategoriesService {
     }
     async update(id, updateCategoryDto) {
         this.checkDbConnectionStatus();
+        if (!this.isDbConnected) {
+            this.logger.warn(`Database not connected. Update operations are not available in fallback mode.`);
+            throw new common_1.ServiceUnavailableException('Database connection is required for update operations. Please try again later when database connectivity is restored.');
+        }
         try {
             const updatedCategory = await this.categoryModel
                 .findByIdAndUpdate(id, updateCategoryDto, { new: true })
@@ -188,6 +196,10 @@ let CategoriesService = CategoriesService_1 = class CategoriesService {
     }
     async remove(id) {
         this.checkDbConnectionStatus();
+        if (!this.isDbConnected) {
+            this.logger.warn(`Database not connected. Delete operations are not available in fallback mode.`);
+            throw new common_1.ServiceUnavailableException('Database connection is required for delete operations. Please try again later when database connectivity is restored.');
+        }
         try {
             const deletedCategory = await this.categoryModel.findByIdAndDelete(id).exec();
             if (!deletedCategory) {
@@ -204,8 +216,7 @@ let CategoriesService = CategoriesService_1 = class CategoriesService {
     }
     checkDbConnectionStatus() {
         if (!this.isDbConnected) {
-            this.logger.error('Database operation attempted but database is not connected');
-            throw new common_1.ServiceUnavailableException('Database connection is currently unavailable. Please try again later or contact support.');
+            this.logger.warn('Database is not connected. Using fallback sample data.');
         }
     }
     handleDatabaseError(error, operation) {
