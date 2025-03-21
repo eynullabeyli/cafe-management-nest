@@ -51,15 +51,15 @@ const getApiBaseUrl = () => {
   if (isClient) {
     console.log('Current hostname:', window.location.hostname);
     
-    // For all environments (local, replit, production)
-    // Use Next.js API route that handles the proxying
-    // This approach is more reliable across environments
+    // Use relative URL for the API to leverage Next.js rewrites
+    // This works in all environments (local, Replit, production)
     const apiUrl = '/api';
     console.log('Using API URL:', apiUrl);
     return apiUrl;
   }
   
-  // On server-side: use environment variable or default localhost URL
+  // On server-side in Next.js SSR context
+  // This is important for getServerSideProps or API routes
   return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 };
 

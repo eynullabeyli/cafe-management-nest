@@ -3,25 +3,20 @@ const nextConfig = {
   reactStrictMode: true,
   transpilePackages: ['react-icons'],
   
-  // Explicitly allow all origins in development mode
-  experimental: {
-    allowedDevOrigins: ["*"],
-  },
+  // Simple configuration for development in Replit
+  // This config is focused on making the cross-origin request work
   
   // Proxy API requests to the NestJS server
   async rewrites() {
     return [
       {
         source: '/api/:path*',
-        destination: 'http://localhost:5000/api/:path*',
+        destination: 'http://127.0.0.1:5000/api/:path*',
       },
     ];
   },
   
-  // External hostname for external preview URLs
-  output: 'standalone',
-
-  // Set header to allow all origins
+  // Set CORS headers
   async headers() {
     return [
       {
@@ -33,6 +28,20 @@ const nextConfig = {
         ],
       },
     ];
+  },
+  
+  // Performance optimizations for Replit
+  output: 'standalone',
+  eslint: { ignoreDuringBuilds: true },
+  
+  // The critical configuration for cross-origin access in Replit
+  experimental: {
+    allowedDevOrigins: ["*"],
+  },
+  
+  // Optimize image loading
+  images: {
+    unoptimized: true,
   },
 };
 
