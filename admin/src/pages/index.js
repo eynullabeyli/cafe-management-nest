@@ -199,58 +199,39 @@ export default function Dashboard() {
       </div>
 
       {/* Quick Actions Panel */}
-      <div className="bg-white shadow-sm rounded-xl overflow-hidden mb-6">
-        <div className="border-b border-gray-200 px-5 py-3">
-          <h3 className="text-lg font-semibold text-gray-800">Quick Actions</h3>
-        </div>
-        
-        <div className="p-4">
-          <div className="flex flex-wrap gap-3">
-            <Link 
-              href="/categories"
-              className="flex items-center p-3 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition duration-200"
-            >
-              <div className="rounded-full bg-blue-100 p-2 mr-3">
-                <FiGrid className="h-5 w-5 text-blue-600" />
-              </div>
-              <span className="font-medium text-gray-800">Categories</span>
+      <div className="bg-gradient-to-r from-gray-50 to-white shadow-sm rounded-xl overflow-hidden mb-6 border border-gray-100">        
+        <div className="py-4 px-5 flex justify-between items-center">
+          <div className="flex items-center">
+            <FiZap className="h-5 w-5 mr-2 text-yellow-500" />
+            <h3 className="text-base font-semibold text-gray-800">Quick Actions</h3>
+          </div>
+          
+          <div className="flex space-x-2">
+            <Link href="/categories" className="action-button bg-blue-50 text-blue-600 hover:bg-blue-100">
+              <FiGrid className="h-4 w-4" />
+              <span>Categories</span>
             </Link>
             
-            <Link 
-              href="/items"
-              className="flex items-center p-3 rounded-lg border border-gray-200 hover:border-green-300 hover:bg-green-50 transition duration-200"
-            >
-              <div className="rounded-full bg-green-100 p-2 mr-3">
-                <FiCoffee className="h-5 w-5 text-green-600" />
-              </div>
-              <span className="font-medium text-gray-800">Items</span>
+            <Link href="/items" className="action-button bg-green-50 text-green-600 hover:bg-green-100">
+              <FiCoffee className="h-4 w-4" />
+              <span>Items</span>
             </Link>
             
-            <Link 
-              href="/items/new"
-              className="flex items-center p-3 rounded-lg border border-gray-200 hover:border-purple-300 hover:bg-purple-50 transition duration-200"
-            >
-              <div className="rounded-full bg-purple-100 p-2 mr-3">
-                <FiPlusCircle className="h-5 w-5 text-purple-600" />
-              </div>
-              <span className="font-medium text-gray-800">New Item</span>
+            <Link href="/items/new" className="action-button bg-purple-50 text-purple-600 hover:bg-purple-100">
+              <FiPlusCircle className="h-4 w-4" />
+              <span>New Item</span>
             </Link>
             
-            <Link 
-              href="/categories/new"
-              className="flex items-center p-3 rounded-lg border border-gray-200 hover:border-indigo-300 hover:bg-indigo-50 transition duration-200"
-            >
-              <div className="rounded-full bg-indigo-100 p-2 mr-3">
-                <FiTarget className="h-5 w-5 text-indigo-600" />
-              </div>
-              <span className="font-medium text-gray-800">New Category</span>
+            <Link href="/categories/new" className="action-button bg-indigo-50 text-indigo-600 hover:bg-indigo-100">
+              <FiTarget className="h-4 w-4" />
+              <span>New Category</span>
             </Link>
           </div>
         </div>
       </div>
 
       {/* Data Visualizations Section */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-2 mb-6">
         {/* Menu Items Panel */}
         <div className="bg-white shadow-sm rounded-xl p-4">
           <div className="flex items-center justify-between mb-3">
@@ -269,7 +250,7 @@ export default function Dashboard() {
             </div>
           </div>
           
-          <div className="chart-container h-28 w-full">
+          <div className="chart-container h-24 w-full">
             {!loading && (
               <Doughnut
                 key="items-doughnut-chart"
@@ -326,7 +307,7 @@ export default function Dashboard() {
             </div>
           </div>
           
-          <div className="chart-container h-28 w-full">
+          <div className="chart-container h-24 w-full">
             {!loading && (
               <Pie
                 key="categories-pie-chart"
@@ -373,7 +354,7 @@ export default function Dashboard() {
             </div>
           </div>
           
-          <div className="chart-container h-28 w-full">
+          <div className="chart-container h-24 w-full">
             {!loading && (
               <Bar
                 key="new-products-bar-chart"
