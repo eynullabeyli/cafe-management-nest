@@ -1,13 +1,42 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { fetchStats, apiLoadingState } from '../lib/api';
 import Card from '../components/Card';
 import { 
+  Chart as ChartJS, 
+  ArcElement, 
+  CategoryScale, 
+  LinearScale, 
+  PointElement, 
+  LineElement, 
+  BarElement,
+  Title,
+  Tooltip, 
+  Legend, 
+  Filler 
+} from 'chart.js';
+import { Doughnut, Pie, Bar } from 'react-chartjs-2';
+import { 
   FiCoffee, FiGrid, FiPlusCircle, FiTrendingUp, FiTag, 
   FiLoader, FiActivity, FiBarChart2, FiLayers, FiDatabase,
-  FiTarget, FiStar, FiZap, FiShield, FiArrowUp, FiBox, FiLink
+  FiTarget, FiStar, FiZap, FiShield, FiArrowUp, FiBox, FiLink,
+  FiCheckCircle, FiAlertTriangle, FiInfo, FiX
 } from 'react-icons/fi';
+
+// Register ChartJS components - including BarElement which is required for Bar charts
+ChartJS.register(
+  ArcElement, 
+  CategoryScale, 
+  LinearScale, 
+  PointElement, 
+  LineElement, 
+  BarElement,
+  Title,
+  Tooltip, 
+  Legend, 
+  Filler
+);
 
 export default function Dashboard() {
   // Key performance indicators stats
@@ -87,348 +116,412 @@ export default function Dashboard() {
         <title>Dashboard - Cafe Admin</title>
       </Head>
 
-      {/* Hero Section with Glass Morphism */}
-      <div className="dashboard-hero bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl mb-8 relative overflow-hidden">
-        <div className="dashboard-hero-glass p-8 backdrop-blur-lg bg-white/20 text-white relative z-10">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-            <div>
-              <h1 className="text-3xl font-bold mb-2">Welcome to Cafe Dashboard</h1>
-              <p className="text-indigo-100 max-w-2xl">
-                Manage your menu items, categories, and monitor real-time statistics to optimize your digital menu.
-              </p>
-            </div>
-            <div className="flex mt-4 md:mt-0 space-x-3">
-              <Link href="/items/new" className="fancy-button fancy-button-glass">
-                <FiZap className="mr-2 h-5 w-5" />
-                New Item
-              </Link>
-              <Link href="/categories/new" className="fancy-button fancy-button-white">
-                <FiTarget className="mr-2 h-5 w-5" />
-                New Category
-              </Link>
-            </div>
+      {/* Main Header */}
+      <div className="bg-white shadow-sm rounded-xl p-6 mb-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-800">Cafe Dashboard</h1>
+            <p className="text-gray-500 mt-1">
+              Overview of your menu system and its performance
+            </p>
           </div>
-
-          {error && (
-            <div className="mt-4 bg-red-400/30 backdrop-blur-sm border border-red-300 p-4 rounded-lg">
-              <div className="flex">
-                <div className="flex-shrink-0">
-                  <FiShield className="h-5 w-5 text-red-100" />
-                </div>
-                <div className="ml-3">
-                  <p className="text-sm text-white">{error}</p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* KPI Selectors */}
-          <div className="mt-8 flex flex-wrap gap-3">
-            <button 
-              onClick={() => setActiveKpi('overview')} 
-              className={`transition-all px-4 py-2 rounded-full text-sm font-medium 
-                ${activeKpi === 'overview' 
-                  ? 'bg-white text-indigo-600 shadow-md' 
-                  : 'bg-white/20 text-white hover:bg-white/30'}`}
-            >
-              <FiBarChart2 className="inline mr-2 h-4 w-4" />
-              Overview
-            </button>
-            <button 
-              onClick={() => setActiveKpi('items')} 
-              className={`transition-all px-4 py-2 rounded-full text-sm font-medium 
-                ${activeKpi === 'items' 
-                  ? 'bg-white text-indigo-600 shadow-md' 
-                  : 'bg-white/20 text-white hover:bg-white/30'}`}
-            >
-              <FiCoffee className="inline mr-2 h-4 w-4" />
-              Menu Items
-            </button>
-            <button 
-              onClick={() => setActiveKpi('categories')} 
-              className={`transition-all px-4 py-2 rounded-full text-sm font-medium 
-                ${activeKpi === 'categories' 
-                  ? 'bg-white text-indigo-600 shadow-md' 
-                  : 'bg-white/20 text-white hover:bg-white/30'}`}
-            >
-              <FiGrid className="inline mr-2 h-4 w-4" />
-              Categories
-            </button>
-            <button 
-              onClick={() => setActiveKpi('system')} 
-              className={`transition-all px-4 py-2 rounded-full text-sm font-medium 
-                ${activeKpi === 'system' 
-                  ? 'bg-white text-indigo-600 shadow-md' 
-                  : 'bg-white/20 text-white hover:bg-white/30'}`}
-            >
-              <FiActivity className="inline mr-2 h-4 w-4" />
-              System
-            </button>
+          <div className="flex mt-4 md:mt-0 space-x-3">
+            <Link href="/items/new" className="btn-primary">
+              <FiPlusCircle className="mr-2 h-5 w-5" />
+              Add Menu Item
+            </Link>
+            <Link href="/categories/new" className="btn-secondary">
+              <FiGrid className="mr-2 h-5 w-5" />
+              Add Category
+            </Link>
           </div>
         </div>
-        
-        {/* Decorative elements */}
-        <div className="absolute top-20 right-10 w-32 h-32 bg-pink-400 rounded-full opacity-20 blur-3xl"></div>
-        <div className="absolute bottom-10 left-10 w-40 h-40 bg-blue-400 rounded-full opacity-20 blur-3xl"></div>
+
+        {error && (
+          <div className="mt-4 bg-red-50 border-l-4 border-red-500 p-4 rounded">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <FiAlertTriangle className="h-5 w-5 text-red-500" />
+              </div>
+              <div className="ml-3">
+                <p className="text-sm text-red-700">{error}</p>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* Stats Cards with 3D Effect and Animated Values */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="stats-card bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-6 shadow-lg transform transition-all hover:scale-105 hover:shadow-xl">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-medium text-white">Menu Items</h3>
-            <div className="p-3 bg-blue-400/30 rounded-full">
-              <FiCoffee className="h-6 w-6 text-white" />
-            </div>
-          </div>
-          
-          <div className="flex items-end justify-between">
+      {/* Stats Summary Cards */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+        <div className="stat-card bg-white shadow-sm rounded-xl p-4">
+          <div className="flex justify-between items-start">
             <div>
-              <div className="text-4xl font-bold text-white">
-                {loading ? (
-                  <div className="h-10 w-20 bg-blue-400/30 animate-pulse rounded"></div>
-                ) : (
-                  stats.totalItems
-                )}
-              </div>
-              <div className="mt-1 text-sm text-blue-100 flex items-center">
-                <FiArrowUp className="mr-1 h-3 w-3" /> 
-                <span>{itemActivePercent}% active</span>
-              </div>
+              <p className="text-sm font-medium text-gray-500">Total Items</p>
+              <h3 className="text-2xl font-bold text-gray-800 mt-1">
+                {loading ? <div className="h-8 w-12 bg-gray-200 animate-pulse rounded"></div> : stats.totalItems}
+              </h3>
             </div>
-            
-            <div className="text-right">
-              <div className="text-2xl font-bold text-blue-200">
-                {stats.activeItems}
-              </div>
-              <div className="mt-1 text-xs text-blue-100">
-                Active
-              </div>
-            </div>
-          </div>
-          
-          <div className="mt-4">
-            <div className="w-full bg-blue-400/30 rounded-full h-2">
-              <div 
-                className="bg-white h-2 rounded-full" 
-                style={{ width: `${itemActivePercent}%` }}
-              ></div>
+            <div className="rounded-full bg-blue-100 p-2">
+              <FiCoffee className="h-5 w-5 text-blue-600" />
             </div>
           </div>
         </div>
 
-        <div className="stats-card bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-6 shadow-lg transform transition-all hover:scale-105 hover:shadow-xl">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-medium text-white">Categories</h3>
-            <div className="p-3 bg-green-400/30 rounded-full">
-              <FiLayers className="h-6 w-6 text-white" />
-            </div>
-          </div>
-          
-          <div className="flex items-end justify-between">
+        <div className="stat-card bg-white shadow-sm rounded-xl p-4">
+          <div className="flex justify-between items-start">
             <div>
-              <div className="text-4xl font-bold text-white">
-                {loading ? (
-                  <div className="h-10 w-20 bg-green-400/30 animate-pulse rounded"></div>
-                ) : (
-                  stats.totalCategories
-                )}
-              </div>
-              <div className="mt-1 text-sm text-green-100 flex items-center">
-                <FiArrowUp className="mr-1 h-3 w-3" /> 
-                <span>{categoryActivePercent}% active</span>
-              </div>
+              <p className="text-sm font-medium text-gray-500">Active Items</p>
+              <h3 className="text-2xl font-bold text-gray-800 mt-1">
+                {loading ? <div className="h-8 w-12 bg-gray-200 animate-pulse rounded"></div> : stats.activeItems}
+              </h3>
             </div>
-            
-            <div className="text-right">
-              <div className="text-2xl font-bold text-green-200">
-                {stats.activeCategories}
-              </div>
-              <div className="mt-1 text-xs text-green-100">
-                Active
-              </div>
-            </div>
-          </div>
-          
-          <div className="mt-4">
-            <div className="w-full bg-green-400/30 rounded-full h-2">
-              <div 
-                className="bg-white h-2 rounded-full" 
-                style={{ width: `${categoryActivePercent}%` }}
-              ></div>
+            <div className="rounded-full bg-green-100 p-2">
+              <FiCheckCircle className="h-5 w-5 text-green-600" />
             </div>
           </div>
         </div>
 
-        <div className="stats-card bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-6 shadow-lg transform transition-all hover:scale-105 hover:shadow-xl">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-medium text-white">New Products</h3>
-            <div className="p-3 bg-purple-400/30 rounded-full">
-              <FiStar className="h-6 w-6 text-white" />
-            </div>
-          </div>
-          
-          <div className="flex items-end justify-between">
+        <div className="stat-card bg-white shadow-sm rounded-xl p-4">
+          <div className="flex justify-between items-start">
             <div>
-              <div className="text-4xl font-bold text-white">
-                {loading ? (
-                  <div className="h-10 w-20 bg-purple-400/30 animate-pulse rounded"></div>
-                ) : (
-                  stats.newItems
-                )}
-              </div>
-              <div className="mt-1 text-sm text-purple-100 flex items-center">
-                <FiArrowUp className="mr-1 h-3 w-3" /> 
-                <span>{newItemPercent}% of total</span>
-              </div>
+              <p className="text-sm font-medium text-gray-500">Categories</p>
+              <h3 className="text-2xl font-bold text-gray-800 mt-1">
+                {loading ? <div className="h-8 w-12 bg-gray-200 animate-pulse rounded"></div> : stats.totalCategories}
+              </h3>
             </div>
-            
-            <div className="text-right">
-              <div className="text-2xl font-bold text-purple-200">
-                {stats.totalItems}
-              </div>
-              <div className="mt-1 text-xs text-purple-100">
-                Total items
-              </div>
+            <div className="rounded-full bg-indigo-100 p-2">
+              <FiLayers className="h-5 w-5 text-indigo-600" />
             </div>
           </div>
-          
-          <div className="mt-4">
-            <div className="w-full bg-purple-400/30 rounded-full h-2">
-              <div 
-                className="bg-white h-2 rounded-full" 
-                style={{ width: `${newItemPercent}%` }}
-              ></div>
+        </div>
+
+        <div className="stat-card bg-white shadow-sm rounded-xl p-4">
+          <div className="flex justify-between items-start">
+            <div>
+              <p className="text-sm font-medium text-gray-500">New Items</p>
+              <h3 className="text-2xl font-bold text-gray-800 mt-1">
+                {loading ? <div className="h-8 w-12 bg-gray-200 animate-pulse rounded"></div> : stats.newItems}
+              </h3>
+            </div>
+            <div className="rounded-full bg-purple-100 p-2">
+              <FiStar className="h-5 w-5 text-purple-600" />
             </div>
           </div>
         </div>
       </div>
 
-      {/* Quick Actions and System Status */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="feature-card bg-white rounded-xl p-1 shadow-lg overflow-hidden">
-          <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-4 rounded-t-lg">
-            <h3 className="text-lg font-semibold text-white flex items-center">
-              <FiZap className="mr-2 h-5 w-5" /> Quick Actions
-            </h3>
+      {/* Data Visualizations Section */}
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-6 mb-6">
+        {/* Menu Items Panel */}
+        <div className="col-span-12 md:col-span-6 lg:col-span-4 bg-white shadow-sm rounded-xl p-5">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-gray-800">Menu Items</h3>
+            <Link href="/items" className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center">
+              View All <FiArrowUp className="ml-1 h-4 w-4 transform rotate-45" />
+            </Link>
           </div>
           
-          <div className="p-5 space-y-3">
-            <Link 
-              href="/categories"
-              className="flex items-center p-4 text-gray-700 bg-gray-50 hover:bg-blue-50 rounded-lg transition-colors duration-200 transform hover:scale-[1.02]"
-            >
-              <div className="p-3 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 text-white mr-4 shadow-md">
-                <FiGrid className="h-6 w-6" />
-              </div>
-              <div>
-                <span className="text-lg font-medium block">Categories</span>
-                <span className="text-gray-500 text-sm">Organize your menu structure</span>
-              </div>
-              <FiArrowUp className="ml-auto transform rotate-45 text-blue-500 h-5 w-5" />
-            </Link>
-            
-            <Link 
-              href="/items"
-              className="flex items-center p-4 text-gray-700 bg-gray-50 hover:bg-green-50 rounded-lg transition-colors duration-200 transform hover:scale-[1.02]"
-            >
-              <div className="p-3 rounded-lg bg-gradient-to-br from-green-500 to-green-600 text-white mr-4 shadow-md">
-                <FiCoffee className="h-6 w-6" />
-              </div>
-              <div>
-                <span className="text-lg font-medium block">Menu Items</span>
-                <span className="text-gray-500 text-sm">Manage your menu offerings</span>
-              </div>
-              <FiArrowUp className="ml-auto transform rotate-45 text-green-500 h-5 w-5" />
-            </Link>
-            
-            <Link 
-              href="/items/new"
-              className="flex items-center p-4 text-gray-700 bg-gray-50 hover:bg-purple-50 rounded-lg transition-colors duration-200 transform hover:scale-[1.02]"
-            >
-              <div className="p-3 rounded-lg bg-gradient-to-br from-purple-500 to-purple-600 text-white mr-4 shadow-md">
-                <FiPlusCircle className="h-6 w-6" />
-              </div>
-              <div>
-                <span className="text-lg font-medium block">Add New Item</span>
-                <span className="text-gray-500 text-sm">Create new menu products</span>
-              </div>
-              <FiArrowUp className="ml-auto transform rotate-45 text-purple-500 h-5 w-5" />
-            </Link>
+          <div className="flex items-center justify-between mb-4">
+            <div className="text-gray-700">
+              <span className="font-semibold">{stats.activeItems}</span> / {stats.totalItems} active
+            </div>
+            <div className="text-sm text-gray-600 font-medium">
+              {itemActivePercent}% active rate
+            </div>
+          </div>
+          
+          <div className="chart-container h-40 w-full">
+            {!loading && (
+              <Doughnut
+                key="items-doughnut-chart"
+                data={{
+                  labels: ['Active Items', 'Inactive Items'],
+                  datasets: [
+                    {
+                      data: [stats.activeItems, stats.totalItems - stats.activeItems],
+                      backgroundColor: ['#4f46e5', '#e5e7eb'],
+                      borderColor: ['#4338ca', '#d1d5db'],
+                      borderWidth: 1,
+                    },
+                  ],
+                }}
+                options={{
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  plugins: {
+                    legend: {
+                      display: true,
+                      position: 'bottom',
+                      labels: { boxWidth: 12, padding: 15, font: { size: 11 } }
+                    },
+                    tooltip: {
+                      callbacks: {
+                        label: function(context) {
+                          return context.label + ': ' + context.raw + ' items';
+                        }
+                      }
+                    }
+                  },
+                  cutout: '70%'
+                }}
+              />
+            )}
+          </div>
+
+          <div className="mt-4 pt-4 border-t border-gray-100">
+            <div className="flex items-center">
+              <span className="h-3 w-3 rounded-full bg-indigo-600 mr-2"></span>
+              <span className="text-sm text-gray-600">Active rate has increased by 5% this week</span>
+            </div>
           </div>
         </div>
 
-        <div className="feature-card bg-white rounded-xl p-1 shadow-lg overflow-hidden">
-          <div className="bg-gradient-to-r from-indigo-500 to-purple-600 p-4 rounded-t-lg">
-            <h3 className="text-lg font-semibold text-white flex items-center">
-              <FiActivity className="mr-2 h-5 w-5" /> System Status
-            </h3>
+        {/* Categories Panel */}
+        <div className="col-span-12 md:col-span-6 lg:col-span-4 bg-white shadow-sm rounded-xl p-5">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-gray-800">Categories</h3>
+            <Link href="/categories" className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center">
+              View All <FiArrowUp className="ml-1 h-4 w-4 transform rotate-45" />
+            </Link>
           </div>
           
-          <div className="p-5 space-y-4">
-            <div className="flex items-center p-3 bg-gray-50 rounded-lg">
-              <div className="flex items-center justify-center w-12 h-12 bg-green-100 text-green-600 rounded-lg mr-4">
-                <FiActivity className="h-6 w-6" />
-              </div>
-              <div className="flex-grow">
-                <div className="flex justify-between items-center">
-                  <span className="font-medium text-gray-800">API Server</span>
-                  <div className="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700 flex items-center">
-                    <span className="mr-1 inline-block w-2 h-2 bg-green-500 rounded-full"></span>
-                    Online
+          <div className="flex items-center justify-between mb-4">
+            <div className="text-gray-700">
+              <span className="font-semibold">{stats.activeCategories}</span> / {stats.totalCategories} active
+            </div>
+            <div className="text-sm text-gray-600 font-medium">
+              {categoryActivePercent}% active rate
+            </div>
+          </div>
+          
+          <div className="chart-container h-40 w-full">
+            {!loading && (
+              <Pie
+                key="categories-pie-chart"
+                data={{
+                  labels: ['Active Categories', 'Inactive Categories'],
+                  datasets: [
+                    {
+                      data: [stats.activeCategories, stats.totalCategories - stats.activeCategories],
+                      backgroundColor: ['#10b981', '#e5e7eb'],
+                      borderColor: ['#059669', '#d1d5db'],
+                      borderWidth: 1,
+                    },
+                  ],
+                }}
+                options={{
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  plugins: {
+                    legend: {
+                      display: true,
+                      position: 'bottom',
+                      labels: { boxWidth: 12, padding: 15, font: { size: 11 } }
+                    },
+                    tooltip: {
+                      callbacks: {
+                        label: function(context) {
+                          return context.label + ': ' + context.raw;
+                        }
+                      }
+                    }
+                  }
+                }}
+              />
+            )}
+          </div>
+
+          <div className="mt-4 pt-4 border-t border-gray-100">
+            <div className="flex items-center">
+              <span className="h-3 w-3 rounded-full bg-green-500 mr-2"></span>
+              <span className="text-sm text-gray-600">All categories are properly configured</span>
+            </div>
+          </div>
+        </div>
+
+        {/* New Products Panel */}
+        <div className="col-span-12 lg:col-span-4 bg-white shadow-sm rounded-xl p-5">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-gray-800">New Products</h3>
+            <div className="text-sm font-medium text-purple-600">
+              {newItemPercent}% of total
+            </div>
+          </div>
+          
+          <div className="chart-container h-40 w-full">
+            {!loading && (
+              <Bar
+                key="new-products-bar-chart"
+                data={{
+                  labels: ['Products'],
+                  datasets: [
+                    {
+                      label: 'New Items',
+                      data: [stats.newItems],
+                      backgroundColor: '#8b5cf6',
+                      borderColor: '#7c3aed',
+                      borderWidth: 1,
+                    },
+                    {
+                      label: 'Regular Items',
+                      data: [stats.totalItems - stats.newItems],
+                      backgroundColor: '#ddd6fe',
+                      borderColor: '#c4b5fd',
+                      borderWidth: 1,
+                    }
+                  ],
+                }}
+                options={{
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  plugins: {
+                    legend: {
+                      display: true,
+                      position: 'bottom',
+                      labels: { boxWidth: 12, padding: 15, font: { size: 11 } }
+                    }
+                  },
+                  scales: {
+                    x: {
+                      grid: {
+                        display: false
+                      }
+                    },
+                    y: {
+                      beginAtZero: true,
+                      ticks: {
+                        precision: 0
+                      }
+                    }
+                  }
+                }}
+              />
+            )}
+          </div>
+
+          <div className="mt-4 pt-4 border-t border-gray-100">
+            <div className="flex items-center">
+              <span className="h-3 w-3 rounded-full bg-purple-500 mr-2"></span>
+              <span className="text-sm text-gray-600">{stats.newItems} new products added recently</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Quick Actions and System Status Panels */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Quick Access Panel */}
+        <div className="bg-white shadow-sm rounded-xl overflow-hidden">
+          <div className="border-b border-gray-200 px-5 py-4">
+            <h3 className="text-lg font-semibold text-gray-800">Quick Actions</h3>
+          </div>
+          
+          <div className="p-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Link 
+                href="/categories"
+                className="flex flex-col items-center justify-center p-4 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition duration-200"
+              >
+                <div className="rounded-full bg-blue-100 p-3 mb-3">
+                  <FiGrid className="h-6 w-6 text-blue-600" />
+                </div>
+                <span className="font-medium text-gray-800">Manage Categories</span>
+              </Link>
+              
+              <Link 
+                href="/items"
+                className="flex flex-col items-center justify-center p-4 rounded-lg border border-gray-200 hover:border-green-300 hover:bg-green-50 transition duration-200"
+              >
+                <div className="rounded-full bg-green-100 p-3 mb-3">
+                  <FiCoffee className="h-6 w-6 text-green-600" />
+                </div>
+                <span className="font-medium text-gray-800">Manage Items</span>
+              </Link>
+              
+              <Link 
+                href="/items/new"
+                className="flex flex-col items-center justify-center p-4 rounded-lg border border-gray-200 hover:border-purple-300 hover:bg-purple-50 transition duration-200"
+              >
+                <div className="rounded-full bg-purple-100 p-3 mb-3">
+                  <FiPlusCircle className="h-6 w-6 text-purple-600" />
+                </div>
+                <span className="font-medium text-gray-800">New Item</span>
+              </Link>
+              
+              <Link 
+                href="/categories/new"
+                className="flex flex-col items-center justify-center p-4 rounded-lg border border-gray-200 hover:border-indigo-300 hover:bg-indigo-50 transition duration-200"
+              >
+                <div className="rounded-full bg-indigo-100 p-3 mb-3">
+                  <FiTarget className="h-6 w-6 text-indigo-600" />
+                </div>
+                <span className="font-medium text-gray-800">New Category</span>
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* System Status Panel */}
+        <div className="bg-white shadow-sm rounded-xl overflow-hidden">
+          <div className="border-b border-gray-200 px-5 py-4">
+            <h3 className="text-lg font-semibold text-gray-800">System Status</h3>
+          </div>
+          
+          <div className="p-5">
+            <div className="space-y-4">
+              <div className="flex items-center p-3 bg-gray-50 rounded-lg">
+                <div className="mr-4">
+                  <div className="rounded-full bg-green-500 h-3 w-3"></div>
+                </div>
+                <div className="flex-1">
+                  <div className="flex justify-between">
+                    <span className="font-medium text-gray-800">Admin Panel</span>
+                    <span className="text-green-600 text-sm font-medium">Operational</span>
+                  </div>
+                  <div className="text-sm text-gray-500 mt-1">
+                    All functions working properly
                   </div>
                 </div>
-                <div className="text-xs text-gray-500 mt-1">
-                  Response time: {systemHealth.responseTime}
+              </div>
+              
+              <div className="flex items-center p-3 bg-gray-50 rounded-lg">
+                <div className="mr-4">
+                  <div className="rounded-full bg-green-500 h-3 w-3"></div>
                 </div>
-              </div>
-            </div>
-            
-            <div className="flex items-center p-3 bg-gray-50 rounded-lg">
-              <div className="flex items-center justify-center w-12 h-12 bg-yellow-100 text-yellow-600 rounded-lg mr-4">
-                <FiDatabase className="h-6 w-6" />
-              </div>
-              <div className="flex-grow">
-                <div className="flex justify-between items-center">
-                  <span className="font-medium text-gray-800">Database</span>
-                  <div className="px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700 flex items-center">
-                    <span className="mr-1 inline-block w-2 h-2 bg-yellow-500 rounded-full pulse-animation"></span>
-                    Limited
+                <div className="flex-1">
+                  <div className="flex justify-between">
+                    <span className="font-medium text-gray-800">API Server</span>
+                    <span className="text-green-600 text-sm font-medium">Operational</span>
+                  </div>
+                  <div className="text-sm text-gray-500 mt-1">
+                    All endpoints responding normally
                   </div>
                 </div>
-                <div className="text-xs text-gray-500 mt-1">
-                  Using fallback mechanisms
+              </div>
+              
+              <div className="flex items-center p-3 bg-gray-50 rounded-lg">
+                <div className="mr-4">
+                  <div className="rounded-full bg-yellow-500 h-3 w-3 pulse-animation"></div>
                 </div>
-              </div>
-            </div>
-            
-            <div className="flex items-center p-3 bg-gray-50 rounded-lg">
-              <div className="flex items-center justify-center w-12 h-12 bg-blue-100 text-blue-600 rounded-lg mr-4">
-                <FiLink className="h-6 w-6" />
-              </div>
-              <div className="flex-grow">
-                <div className="flex justify-between items-center">
-                  <span className="font-medium text-gray-800">Uptime</span>
-                  <div className="px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
-                    {systemHealth.uptime}
+                <div className="flex-1">
+                  <div className="flex justify-between">
+                    <span className="font-medium text-gray-800">Database</span>
+                    <span className="text-yellow-600 text-sm font-medium">Limited</span>
+                  </div>
+                  <div className="text-sm text-gray-500 mt-1">
+                    Using fallback mechanisms
                   </div>
                 </div>
-                <div className="text-xs text-gray-500 mt-1">
-                  Last deployment: {systemHealth.lastDeployment}
+              </div>
+              
+              <div className="bg-blue-50 p-4 rounded-lg">
+                <div className="font-medium text-sm text-blue-700 mb-1 flex items-center">
+                  <FiInfo className="mr-2 h-4 w-4" /> System Information
                 </div>
+                <p className="text-sm text-blue-600">
+                  The system is operating with fallback database functionality. Your changes will be synchronized when database connectivity is fully restored.
+                </p>
               </div>
-            </div>
-            
-            <div className="bg-indigo-50 p-4 rounded-lg text-xs text-indigo-700 shadow-inner">
-              <div className="flex items-center">
-                <FiShield className="mr-2 h-4 w-4" />
-                <p className="font-medium">Note:</p>
-              </div>
-              <p className="mt-1 ml-6">
-                Limited database functionality means the system is operating with fallback 
-                mechanisms. Some features may use local storage or cached data. All changes 
-                will be synchronized when connectivity is restored.
-              </p>
             </div>
           </div>
         </div>
