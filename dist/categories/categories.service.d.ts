@@ -11,6 +11,7 @@ export declare class CategoriesService {
     create(createCategoryDto: CreateCategoryDto): Promise<Category>;
     findAll(): Promise<Category[]>;
     findAllActive(): Promise<Category[]>;
+    private getSampleCategories;
     findOne(id: string): Promise<Category>;
     findByUniqId(uniqId: string): Promise<Category>;
     update(id: string, updateCategoryDto: UpdateCategoryDto): Promise<Category>;

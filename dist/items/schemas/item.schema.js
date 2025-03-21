@@ -16,6 +16,10 @@ let Item = class Item {
 };
 exports.Item = Item;
 __decorate([
+    (0, swagger_1.ApiProperty)({ description: 'The MongoDB id of the item (optional in request body)' }),
+    __metadata("design:type", String)
+], Item.prototype, "_id", void 0);
+__decorate([
     (0, swagger_1.ApiProperty)({ description: 'The name of the item' }),
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", String)

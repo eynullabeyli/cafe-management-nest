@@ -6,6 +6,9 @@ export type ItemDocument = Item & Document;
 
 @Schema({ timestamps: true })
 export class Item {
+  @ApiProperty({ description: 'The MongoDB id of the item (optional in request body)' })
+  _id?: string;
+
   @ApiProperty({ description: 'The name of the item' })
   @Prop({ required: true })
   name: string;

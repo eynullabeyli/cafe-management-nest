@@ -6,6 +6,9 @@ export type CategoryDocument = Category & Document;
 
 @Schema({ timestamps: true })
 export class Category {
+  @ApiProperty({ description: 'The MongoDB id of the category (optional in request body)' })
+  _id?: string;
+
   @ApiProperty({ description: 'The name of the category' })
   @Prop({ required: true })
   name: string;

@@ -16,6 +16,10 @@ let Category = class Category {
 };
 exports.Category = Category;
 __decorate([
+    (0, swagger_1.ApiProperty)({ description: 'The MongoDB id of the category (optional in request body)' }),
+    __metadata("design:type", String)
+], Category.prototype, "_id", void 0);
+__decorate([
     (0, swagger_1.ApiProperty)({ description: 'The name of the category' }),
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", String)
