@@ -5,20 +5,30 @@ const isClient = typeof window !== 'undefined';
 
 // Helper function to get API URL
 const getApiBaseUrl = () => {
-  // In Replit environment, we can construct the appropriate URL
-  if (isClient && window.location.hostname.includes('.replit.dev')) {
-    // Extract the Replit subdomain
-    const urlParts = window.location.hostname.split('.');
-    // Replace the port (3000) with the NestJS port (5000)
-    return `https://${urlParts[0]}-5000.${urlParts.slice(1).join('.')}/api`;
+  if (isClient) {
+    console.log('Current hostname:', window.location.hostname);
+    
+    // Use direct connection to NestJS server in Replit environment
+    const replitHostname = window.location.hostname;
+    
+    // If we're in Replit preview environment
+    if (replitHostname.includes('.replit.dev') || replitHostname.includes('.repl.co')) {
+      // Get the Replit ID from our current URL
+      // Convert from something like: abc.replit.dev to abc-5000.replit.dev
+      const urlParts = replitHostname.split('.');
+      const prefix = urlParts[0].split('-')[0]; // Get the repl ID part
+      const domain = urlParts.slice(1).join('.');
+      const directApiUrl = `https://${prefix}-5000.${domain}/api`;
+      console.log('Using direct Replit API URL:', directApiUrl);
+      return directApiUrl;
+    }
+    
+    // For local development, use Next.js proxy
+    return '/api';
   }
   
-  // Default cases:
-  // On client-side: use relative URL to let Next.js handle rewrites
   // On server-side: use environment variable or default localhost URL
-  return isClient 
-    ? '/api' 
-    : (process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000/api');
+  return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 };
 
 // Create the Axios instance
