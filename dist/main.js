@@ -43,10 +43,12 @@ async function bootstrap() {
         app.useGlobalInterceptors(new transform_interceptor_1.TransformInterceptor());
         logger.log('Setting up Swagger documentation...');
         const config = new swagger_1.DocumentBuilder()
-            .setTitle('Nest.js API')
-            .setDescription('The Nest.js API documentation')
+            .setTitle('Cafe Management API')
+            .setDescription('API documentation for Cafe Management System')
             .setVersion('1.0')
-            .addTag('users')
+            .addTag('users', 'User management endpoints')
+            .addTag('categories', 'Category management endpoints')
+            .addTag('items', 'Item management endpoints')
             .build();
         const document = swagger_1.SwaggerModule.createDocument(app, config);
         swagger_1.SwaggerModule.setup('api/docs', app, document);
@@ -83,6 +85,17 @@ async function startMinimalAppWithoutDatabase() {
         skipMissingProperties: true,
         transform: true,
     }));
+    logger.log('Setting up Swagger documentation for minimal app...');
+    const config = new swagger_1.DocumentBuilder()
+        .setTitle('Cafe Management API')
+        .setDescription('API documentation for Cafe Management System (Limited Functionality)')
+        .setVersion('1.0')
+        .addTag('users', 'User management endpoints')
+        .addTag('categories', 'Category management endpoints')
+        .addTag('items', 'Item management endpoints')
+        .build();
+    const document = swagger_1.SwaggerModule.createDocument(app, config);
+    swagger_1.SwaggerModule.setup('api/docs', app, document);
     const port = process.env.PORT || 5000;
     await app.listen(port, '0.0.0.0');
     logger.log(`Minimal application is running on port ${port}`);

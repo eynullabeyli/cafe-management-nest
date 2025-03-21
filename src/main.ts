@@ -59,10 +59,12 @@ async function bootstrap() {
     // Setup Swagger documentation
     logger.log('Setting up Swagger documentation...');
     const config = new DocumentBuilder()
-      .setTitle('Nest.js API')
-      .setDescription('The Nest.js API documentation')
+      .setTitle('Cafe Management API')
+      .setDescription('API documentation for Cafe Management System')
       .setVersion('1.0')
-      .addTag('users')
+      .addTag('users', 'User management endpoints')
+      .addTag('categories', 'Category management endpoints')
+      .addTag('items', 'Item management endpoints')
       .build();
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('api/docs', app, document);
@@ -113,6 +115,19 @@ async function startMinimalAppWithoutDatabase() {
     transform: true,
   }));
   
+  // Setup Swagger documentation
+  logger.log('Setting up Swagger documentation for minimal app...');
+  const config = new DocumentBuilder()
+    .setTitle('Cafe Management API')
+    .setDescription('API documentation for Cafe Management System (Limited Functionality)')
+    .setVersion('1.0')
+    .addTag('users', 'User management endpoints')
+    .addTag('categories', 'Category management endpoints')
+    .addTag('items', 'Item management endpoints')
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api/docs', app, document);
+
   // Start the minimal server
   const port = process.env.PORT || 5000;
   await app.listen(port, '0.0.0.0');
