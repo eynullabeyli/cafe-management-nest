@@ -365,7 +365,7 @@ export default function Items() {
           </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="items-list-container">
           {items.map((item) => (
             <div 
               key={item._id} 
@@ -431,8 +431,7 @@ export default function Items() {
                 )}
                 
                 <div className="menu-item-price">
-                  <FiDollarSign className="mr-1" />
-                  {item.price.toFixed(2)}
+                  {item.price.toFixed(2)} AZN
                 </div>
                 
                 <div className="menu-item-actions">

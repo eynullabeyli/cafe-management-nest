@@ -199,19 +199,19 @@ export default function EditItem() {
                   Price*
                 </label>
                 <div className="relative mt-1 rounded-md shadow-sm">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <span className="text-gray-500 sm:text-sm">$</span>
-                  </div>
                   <input
                     type="text"
                     id="price"
                     name="price"
                     value={formData.price}
                     onChange={handleChange}
-                    className="form-input border rounded-md w-full py-2 pl-7 pr-3"
+                    className="form-input border rounded-md w-full py-2 pl-3 pr-12"
                     placeholder="0.00"
                     required
                   />
+                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                    <span className="text-gray-500 sm:text-sm">AZN</span>
+                  </div>
                 </div>
               </div>
 
