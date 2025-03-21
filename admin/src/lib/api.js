@@ -51,20 +51,12 @@ const getApiBaseUrl = () => {
   if (isClient) {
     console.log('Current hostname:', window.location.hostname);
     
-    // Use direct connection to NestJS server in Replit environment
-    const replitHostname = window.location.hostname;
-    
-    // If we're in Replit preview environment
-    if (replitHostname.includes('.replit.dev') || replitHostname.includes('.repl.co')) {
-      // In Replit, use the same host with the API prefix
-      // This will be properly forwarded by the rewrites in next.config.js
-      const apiUrl = `/api`;
-      console.log('Using Replit API URL:', apiUrl);
-      return apiUrl;
-    }
-    
-    // For local development, use Next.js proxy
-    return '/api';
+    // For all environments (local, replit, production)
+    // Use Next.js API route that handles the proxying
+    // This approach is more reliable across environments
+    const apiUrl = '/api';
+    console.log('Using API URL:', apiUrl);
+    return apiUrl;
   }
   
   // On server-side: use environment variable or default localhost URL

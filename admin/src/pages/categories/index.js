@@ -201,11 +201,16 @@ export default function Categories() {
             <div className="p-3 rounded-full bg-blue-100 text-blue-600 inline-flex mb-4">
               <FiGrid className="h-8 w-8" />
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No categories found</h3>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">
+              {filter === 'all' ? 'No categories available' : 
+               filter === 'active' ? 'No active categories' : 'No inactive categories'}
+            </h3>
             <p className="text-gray-500 mb-6 max-w-md mx-auto">
-              {filter !== 'all' 
-                ? `No ${filter} categories found. Try changing the filter or add a new category.` 
-                : 'Start creating categories to organize your menu items.'}
+              {filter === 'all' 
+                ? 'Add your first category to organize your menu items.' 
+                : filter === 'active'
+                ? 'Activate categories to show them on your menu.'
+                : 'All your categories are currently active.'}
             </p>
             <Link 
               href="/categories/new"
