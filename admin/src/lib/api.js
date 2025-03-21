@@ -29,12 +29,23 @@ const handleApiError = (error) => {
   }
 };
 
+// Extract data from response wrapper
+const extractData = (response) => {
+  // Check if data is in the expected format with a data property
+  if (response && response.data !== undefined) {
+    return response.data;
+  }
+  // If not in the expected format, return the whole response
+  return response;
+};
+
 // Categories API functions
 export const fetchCategories = async (activeOnly = false) => {
   try {
     const params = activeOnly ? { activeOnly: 'true' } : {};
     const response = await api.get('/categories', { params });
-    return response.data;
+    console.log('Categories API response:', response.data);
+    return extractData(response.data);
   } catch (error) {
     handleApiError(error);
   }
@@ -43,7 +54,8 @@ export const fetchCategories = async (activeOnly = false) => {
 export const fetchCategory = async (id) => {
   try {
     const response = await api.get(`/categories/${id}`);
-    return response.data;
+    console.log('Category API response:', response.data);
+    return extractData(response.data);
   } catch (error) {
     handleApiError(error);
   }
@@ -52,7 +64,8 @@ export const fetchCategory = async (id) => {
 export const fetchCategoryByUniqId = async (uniqId) => {
   try {
     const response = await api.get(`/categories/uniqId/${uniqId}`);
-    return response.data;
+    console.log('Category by UniqId API response:', response.data);
+    return extractData(response.data);
   } catch (error) {
     handleApiError(error);
   }
@@ -61,7 +74,8 @@ export const fetchCategoryByUniqId = async (uniqId) => {
 export const createCategory = async (categoryData) => {
   try {
     const response = await api.post('/categories', categoryData);
-    return response.data;
+    console.log('Create Category API response:', response.data);
+    return extractData(response.data);
   } catch (error) {
     handleApiError(error);
   }
@@ -70,7 +84,8 @@ export const createCategory = async (categoryData) => {
 export const updateCategory = async (id, categoryData) => {
   try {
     const response = await api.put(`/categories/${id}`, categoryData);
-    return response.data;
+    console.log('Update Category API response:', response.data);
+    return extractData(response.data);
   } catch (error) {
     handleApiError(error);
   }
@@ -79,7 +94,8 @@ export const updateCategory = async (id, categoryData) => {
 export const deleteCategory = async (id) => {
   try {
     const response = await api.delete(`/categories/${id}`);
-    return response.data;
+    console.log('Delete Category API response:', response.data);
+    return extractData(response.data);
   } catch (error) {
     handleApiError(error);
   }
@@ -95,7 +111,8 @@ export const fetchItems = async (options = {}) => {
     if (options.activeOnly !== undefined) params.activeOnly = options.activeOnly;
     
     const response = await api.get('/items', { params });
-    return response.data;
+    console.log('Items API response:', response.data);
+    return extractData(response.data);
   } catch (error) {
     handleApiError(error);
   }
@@ -104,7 +121,8 @@ export const fetchItems = async (options = {}) => {
 export const fetchItem = async (id) => {
   try {
     const response = await api.get(`/items/${id}`);
-    return response.data;
+    console.log('Item API response:', response.data);
+    return extractData(response.data);
   } catch (error) {
     handleApiError(error);
   }
@@ -114,7 +132,8 @@ export const fetchItemsByCategory = async (categoryUniqId, activeOnly = false) =
   try {
     const params = activeOnly ? { activeOnly: 'true' } : {};
     const response = await api.get(`/items/category/${categoryUniqId}`, { params });
-    return response.data;
+    console.log('Items by category API response:', response.data);
+    return extractData(response.data);
   } catch (error) {
     handleApiError(error);
   }
@@ -129,7 +148,8 @@ export const searchItemsByName = async (nameQuery, options = {}) => {
     if (options.activeOnly !== undefined) params.activeOnly = options.activeOnly;
     
     const response = await api.get(`/items/search/name`, { params });
-    return response.data;
+    console.log('Search items API response:', response.data);
+    return extractData(response.data);
   } catch (error) {
     handleApiError(error);
   }
@@ -138,7 +158,8 @@ export const searchItemsByName = async (nameQuery, options = {}) => {
 export const createItem = async (itemData) => {
   try {
     const response = await api.post('/items', itemData);
-    return response.data;
+    console.log('Create item API response:', response.data);
+    return extractData(response.data);
   } catch (error) {
     handleApiError(error);
   }
@@ -147,7 +168,8 @@ export const createItem = async (itemData) => {
 export const updateItem = async (id, itemData) => {
   try {
     const response = await api.put(`/items/${id}`, itemData);
-    return response.data;
+    console.log('Update item API response:', response.data);
+    return extractData(response.data);
   } catch (error) {
     handleApiError(error);
   }
@@ -156,7 +178,8 @@ export const updateItem = async (id, itemData) => {
 export const deleteItem = async (id) => {
   try {
     const response = await api.delete(`/items/${id}`);
-    return response.data;
+    console.log('Delete item API response:', response.data);
+    return extractData(response.data);
   } catch (error) {
     handleApiError(error);
   }
@@ -167,27 +190,35 @@ export const fetchStats = async () => {
   // This is a placeholder function for fetching dashboard stats
   // In a real application, this would call a dedicated endpoint
   try {
-    const [categoriesResponse, itemsResponse] = await Promise.all([
+    // Get categories and items via our fetch functions which now correctly extract data
+    const [categories, items] = await Promise.all([
       fetchCategories().catch(() => []),
       fetchItems().catch(() => [])
     ]);
     
+    console.log('Stats calculation:');
+    console.log('- Categories:', categories);
+    console.log('- Items:', items);
+    
     // Ensure we have arrays, even if API returns unexpected data
-    const categories = Array.isArray(categoriesResponse) ? categoriesResponse : [];
-    const items = Array.isArray(itemsResponse) ? itemsResponse : [];
+    const categoriesArray = Array.isArray(categories) ? categories : [];
+    const itemsArray = Array.isArray(items) ? items : [];
     
     // Safely filter with null checks
-    const activeCategories = categories.filter(cat => cat && cat.isActive);
-    const activeItems = items.filter(item => item && item.isActive);
-    const newItems = items.filter(item => item && item.isNew);
+    const activeCategories = categoriesArray.filter(cat => cat && cat.isActive);
+    const activeItems = itemsArray.filter(item => item && item.isActive);
+    const newItems = itemsArray.filter(item => item && item.isNew);
     
-    return {
-      totalCategories: categories.length,
+    const stats = {
+      totalCategories: categoriesArray.length,
       activeCategories: activeCategories.length,
-      totalItems: items.length,
+      totalItems: itemsArray.length,
       activeItems: activeItems.length,
       newItems: newItems.length
     };
+    
+    console.log('Calculated stats:', stats);
+    return stats;
   } catch (error) {
     console.error('Error fetching stats:', error);
     // Return default empty stats instead of throwing
