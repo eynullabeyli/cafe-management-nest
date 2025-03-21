@@ -118,38 +118,7 @@ export default function Categories() {
         />
       )}
 
-      {/* Statistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <Card className="flex items-center p-4 bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
-          <div className="p-3 rounded-full bg-blue-100 text-blue-600 mr-4">
-            <FiLayers className="h-6 w-6" />
-          </div>
-          <div>
-            <h3 className="text-sm text-blue-600 font-medium">Total Categories</h3>
-            <p className="text-2xl font-semibold text-blue-800">{categories.length}</p>
-          </div>
-        </Card>
-        
-        <Card className="flex items-center p-4 bg-gradient-to-br from-green-50 to-green-100 border-green-200">
-          <div className="p-3 rounded-full bg-green-100 text-green-600 mr-4">
-            <FiCheck className="h-6 w-6" />
-          </div>
-          <div>
-            <h3 className="text-sm text-green-600 font-medium">Active Categories</h3>
-            <p className="text-2xl font-semibold text-green-800">{activeCount}</p>
-          </div>
-        </Card>
-        
-        <Card className="flex items-center p-4 bg-gradient-to-br from-gray-50 to-gray-100 border-gray-200">
-          <div className="p-3 rounded-full bg-gray-100 text-gray-600 mr-4">
-            <FiX className="h-6 w-6" />
-          </div>
-          <div>
-            <h3 className="text-sm text-gray-600 font-medium">Inactive Categories</h3>
-            <p className="text-2xl font-semibold text-gray-800">{inactiveCount}</p>
-          </div>
-        </Card>
-      </div>
+
 
       {/* Stylish Filter Selector */}
       <div className="fancy-filter-container mb-6">

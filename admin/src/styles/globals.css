@@ -1052,7 +1052,8 @@ body {
 .fancy-filter-container {
   display: flex;
   justify-content: center;
-  padding: 0.5rem;
+  padding: 1rem 0.5rem;
+  margin-top: 0.5rem;
 }
 
 .fancy-filter {
