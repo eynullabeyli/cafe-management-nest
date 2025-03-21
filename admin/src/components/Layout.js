@@ -100,6 +100,13 @@ const Layout = ({ children }) => {
 
   return (
     <div className="layout-container">
+      {/* Global API loading indicator */}
+      {isAnyApiLoading && (
+        <div className="global-api-loading">
+          <FiLoader className="global-api-spinner" />
+        </div>
+      )}
+      
       {/* Mobile menu overlay */}
       {isMobileMenuOpen && (
         <div 

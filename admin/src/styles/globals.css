@@ -800,3 +800,27 @@ body {
 .nav-link.loading {
   position: relative;
 }
+
+/* Global API loading indicator */
+.global-api-loading {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 9999;
+  border: 2px solid var(--primary-color);
+}
+
+.global-api-spinner {
+  animation: spin 1s linear infinite;
+  color: var(--primary-color);
+  width: 20px;
+  height: 20px;
+}

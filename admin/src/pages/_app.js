@@ -29,6 +29,13 @@ function MyApp({ Component, pageProps }) {
     };
   }, [router]);
 
+  // Get any layout defined at the page level, otherwise use default layout
+  const getLayout = Component.getLayout || ((page) => (
+    <Layout>
+      {page}
+    </Layout>
+  ));
+
   return (
     <>
       {/* Loading animation */}
@@ -37,9 +44,7 @@ function MyApp({ Component, pageProps }) {
           <div className="spinner"></div>
         </div>
       )}
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
+      {getLayout(<Component {...pageProps} />)}
     </>
   );
 }
