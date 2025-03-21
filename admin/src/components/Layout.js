@@ -30,31 +30,45 @@ const Layout = ({ children }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div style={{minHeight: '100vh', backgroundColor: 'var(--gray-50)'}}>
       {/* Mobile menu overlay */}
       {isMobileMenuOpen && (
         <div 
-          className="fixed inset-0 bg-gray-800 bg-opacity-75 z-20"
+          style={{
+            position: 'fixed',
+            inset: 0,
+            backgroundColor: 'var(--gray-800)',
+            opacity: 0.75,
+            zIndex: 20
+          }}
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}
 
       {/* Mobile menu */}
-      <div className={`
-        fixed top-0 left-0 bottom-0 w-64 bg-white z-30 shadow-xl transform transition-transform duration-300 ease-in-out
-        ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
-        md:hidden
-      `}>
-        <div className="flex items-center justify-between px-4 py-6 border-b">
-          <span className="text-lg font-semibold text-primary">Cafe Admin</span>
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        bottom: 0,
+        width: '16rem',
+        backgroundColor: 'white',
+        zIndex: 30,
+        boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+        transform: isMobileMenuOpen ? 'translateX(0)' : 'translateX(-100%)',
+        transition: 'transform 300ms ease-in-out',
+        display: 'block'
+      }}>
+        <div className="flex items-center justify-between p-4" style={{borderBottom: '1px solid var(--gray-200)'}}>
+          <span style={{fontSize: '1.125rem', fontWeight: 600, color: 'var(--primary-color)'}}>Cafe Admin</span>
           <button 
             onClick={() => setIsMobileMenuOpen(false)}
-            className="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100"
+            style={{padding: '0.5rem', borderRadius: '0.375rem', color: 'var(--gray-400)'}}
           >
-            <FiX className="h-6 w-6" />
+            <FiX style={{height: '1.5rem', width: '1.5rem'}} />
           </button>
         </div>
-        <nav className="mt-4 px-2 space-y-1">
+        <nav style={{marginTop: '1rem', padding: '0 0.5rem'}}>
           {navigation.map((item) => {
             const active = isActive(item.href);
             const Icon = item.icon;
@@ -63,11 +77,20 @@ const Layout = ({ children }) => {
               <Link
                 key={item.name}
                 href={item.disabled ? '#' : item.href}
-                className={`
-                  flex items-center px-4 py-3 text-sm font-medium rounded-md
-                  ${active ? 'bg-primary text-white' : 'text-gray-600 hover:bg-gray-100'}
-                  ${item.disabled ? 'opacity-50 cursor-default' : ''}
-                `}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  padding: '0.75rem 1rem',
+                  fontSize: '0.875rem',
+                  fontWeight: 500,
+                  borderRadius: '0.375rem',
+                  backgroundColor: active ? 'var(--primary-color)' : 'transparent',
+                  color: active ? 'white' : 'var(--gray-600)',
+                  opacity: item.disabled ? 0.5 : 1,
+                  cursor: item.disabled ? 'default' : 'pointer',
+                  marginBottom: '0.25rem',
+                  textDecoration: 'none'
+                }}
                 onClick={(e) => {
                   if (item.disabled) {
                     e.preventDefault();
@@ -77,7 +100,12 @@ const Layout = ({ children }) => {
                 }}
               >
                 <Icon 
-                  className={`mr-3 h-5 w-5 ${active ? 'text-white' : 'text-gray-400'}`} 
+                  style={{
+                    marginRight: '0.75rem',
+                    height: '1.25rem',
+                    width: '1.25rem',
+                    color: active ? 'white' : 'var(--gray-400)'
+                  }} 
                 />
                 {item.name}
               </Link>
@@ -87,13 +115,13 @@ const Layout = ({ children }) => {
       </div>
 
       {/* Static sidebar for desktop */}
-      <div className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0">
-        <div className="flex-1 flex flex-col min-h-0 bg-white shadow-lg">
-          <div className="flex items-center h-16 px-6 border-b">
-            <span className="text-lg font-bold text-primary">Cafe Admin</span>
+      <div className="sidebar-desktop">
+        <div className="sidebar-container">
+          <div className="sidebar-header">
+            <span className="logo">Cafe Admin</span>
           </div>
-          <div className="flex-1 flex flex-col mt-6 px-3 overflow-y-auto">
-            <nav className="flex-1 space-y-1">
+          <div className="sidebar-content">
+            <nav className="sidebar-nav">
               {navigation.map((item) => {
                 const active = isActive(item.href);
                 const Icon = item.icon;
@@ -102,30 +130,43 @@ const Layout = ({ children }) => {
                   <Link
                     key={item.name}
                     href={item.disabled ? '#' : item.href}
-                    className={`
-                      flex items-center px-4 py-3 text-sm font-medium rounded-md
-                      ${active ? 'bg-primary text-white' : 'text-gray-600 hover:bg-gray-100'}
-                      ${item.disabled ? 'opacity-50 cursor-default' : ''}
-                    `}
+                    className={`nav-item ${active ? 'active' : ''} ${item.disabled ? 'disabled' : ''}`}
                     onClick={(e) => {
                       if (item.disabled) {
                         e.preventDefault();
                       }
                     }}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      padding: '0.75rem 1rem',
+                      fontSize: '0.875rem',
+                      fontWeight: 500, 
+                      borderRadius: '0.375rem',
+                      backgroundColor: active ? 'var(--primary-color)' : 'transparent',
+                      color: active ? 'white' : 'var(--gray-600)',
+                      opacity: item.disabled ? 0.5 : 1,
+                      cursor: item.disabled ? 'default' : 'pointer',
+                      marginBottom: '0.25rem',
+                      textDecoration: 'none'
+                    }}
                   >
                     <Icon 
-                      className={`mr-3 h-5 w-5 ${active ? 'text-white' : 'text-gray-400'}`} 
+                      style={{
+                        marginRight: '0.75rem',
+                        height: '1.25rem',
+                        width: '1.25rem',
+                        color: active ? 'white' : 'var(--gray-400)'
+                      }} 
                     />
                     {item.name}
                   </Link>
                 );
               })}
             </nav>
-            <div className="mt-6 pb-6 border-t">
-              <button
-                className="mt-6 flex items-center px-4 py-3 text-sm font-medium text-gray-600 rounded-md hover:bg-gray-100 w-full"
-              >
-                <FiLogOut className="mr-3 h-5 w-5 text-gray-400" />
+            <div className="sidebar-footer">
+              <button className="logout-button">
+                <FiLogOut style={{marginRight: '0.75rem', height: '1.25rem', width: '1.25rem', color: 'var(--gray-400)'}} />
                 Log Out
               </button>
             </div>
@@ -134,24 +175,24 @@ const Layout = ({ children }) => {
       </div>
 
       {/* Mobile top nav */}
-      <div className="md:hidden bg-white border-b shadow-sm">
-        <div className="flex items-center justify-between h-16 px-4">
-          <div className="flex items-center">
+      <div className="mobile-nav">
+        <div className="mobile-nav-container">
+          <div className="mobile-nav-button-container">
             <button
               type="button"
-              className="text-gray-500 hover:text-gray-600 focus:outline-none"
+              className="mobile-menu-button"
               onClick={() => setIsMobileMenuOpen(true)}
             >
-              <FiMenu className="h-6 w-6" />
+              <FiMenu style={{height: '1.5rem', width: '1.5rem'}} />
             </button>
-            <span className="ml-3 text-lg font-semibold text-primary">Cafe Admin</span>
+            <span className="mobile-logo">Cafe Admin</span>
           </div>
         </div>
       </div>
 
       {/* Main content */}
-      <div className="md:pl-64">
-        <main className="py-8 px-4 md:px-8 max-w-7xl mx-auto">
+      <div className="main-content">
+        <main className="main-container">
           {children}
         </main>
       </div>
