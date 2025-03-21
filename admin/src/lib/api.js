@@ -13,14 +13,11 @@ const getApiBaseUrl = () => {
     
     // If we're in Replit preview environment
     if (replitHostname.includes('.replit.dev') || replitHostname.includes('.repl.co')) {
-      // Get the Replit ID from our current URL
-      // Convert from something like: abc.replit.dev to abc-5000.replit.dev
-      const urlParts = replitHostname.split('.');
-      const prefix = urlParts[0].split('-')[0]; // Get the repl ID part
-      const domain = urlParts.slice(1).join('.');
-      const directApiUrl = `https://${prefix}-5000.${domain}/api`;
-      console.log('Using direct Replit API URL:', directApiUrl);
-      return directApiUrl;
+      // In Replit, we can use a simpler approach
+      // Just replace the port in the current hostname
+      const apiUrl = `${window.location.protocol}//${window.location.hostname.replace('3000', '5000')}/api`;
+      console.log('Using direct Replit API URL:', apiUrl);
+      return apiUrl;
     }
     
     // For local development, use Next.js proxy
