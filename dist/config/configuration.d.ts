@@ -7,6 +7,7 @@ declare const _default: () => {
         tlsInsecure: boolean;
         useNewUrlParser: boolean;
         useUnifiedTopology: boolean;
+        useFallbackData: boolean;
     };
     env: string;
     debug: string | boolean;

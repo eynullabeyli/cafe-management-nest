@@ -13,6 +13,7 @@ exports.default = () => {
             tlsInsecure: true,
             useNewUrlParser: true,
             useUnifiedTopology: true,
+            useFallbackData: true,
         },
         env: process.env.NODE_ENV || 'development',
         debug: process.env.DEBUG || false,

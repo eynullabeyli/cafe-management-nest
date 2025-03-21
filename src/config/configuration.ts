@@ -13,6 +13,8 @@ export default () => {
       tlsInsecure: true, // This may help with specific TLS handshake problems
       useNewUrlParser: true,
       useUnifiedTopology: true,
+      // Set this to true to enable fallback data mode when DB is unavailable
+      useFallbackData: true,
     },
     // Environment information
     env: process.env.NODE_ENV || 'development',
