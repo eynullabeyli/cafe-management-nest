@@ -1,0 +1,85 @@
+categories:1 
+            
+            
+           GET https://f983daf1-bd62-47b0-b629-26314f3bcb7a-00-s70cy84odon4.picard.replit.dev:3000/categories 500 (Internal Server Error)
+main.js:2478 Download the React DevTools for a better development experience: https://react.dev/link/react-devtools
+index.js:646 Uncaught ModuleBuildError: Module build failed (from ../node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js):
+Error: Cannot apply unknown utility class: space-x-1.5
+    at onInvalidCandidate (home/runner/workspace/node_modules/tailwindcss/dist/lib.js:17:347)
+    at ie (home/runner/workspace/node_modules/tailwindcss/dist/lib.js:12:116889)
+    at Ve (home/runner/workspace/node_modules/tailwindcss/dist/lib.js:17:310)
+    at qr (home/runner/workspace/node_modules/tailwindcss/dist/lib.js:33:780)
+    at async Hr (home/runner/workspace/node_modules/tailwindcss/dist/lib.js:33:1071)
+    at async ot (home/runner/workspace/node_modules/@tailwindcss/node/dist/index.js:10:3272)
+    at async p (home/runner/workspace/node_modules/@tailwindcss/postcss/dist/index.js:8:3242)
+    at async Object.Once (home/runner/workspace/node_modules/@tailwindcss/postcss/dist/index.js:8:3443)
+    at async LazyResult.runAsync (home/runner/workspace/node_modules/next/node_modules/postcss/lib/lazy-result.js:261:11)
+    at async Span.traceAsyncFn (home/runner/workspace/node_modules/next/dist/trace/trace.js:157:20)
+    at async home/runner/workspace/node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js:55:22
+    at async Span.traceAsyncFn (home/runner/workspace/node_modules/next/dist/trace/trace.js:157:20)
+    at onInvalidCandidate (home/runner/workspace/node_modules/tailwindcss/dist/lib.js:17:347)
+    at ie (home/runner/workspace/node_modules/tailwindcss/dist/lib.js:12:116889)
+    at Ve (home/runner/workspace/node_modules/tailwindcss/dist/lib.js:17:310)
+    at qr (home/runner/workspace/node_modules/tailwindcss/dist/lib.js:33:780)
+    at async Hr (home/runner/workspace/node_modules/tailwindcss/dist/lib.js:33:1071)
+    at async ot (home/runner/workspace/node_modules/@tailwindcss/node/dist/index.js:10:3272)
+    at async p (home/runner/workspace/node_modules/@tailwindcss/postcss/dist/index.js:8:3242)
+    at async Object.Once (home/runner/workspace/node_modules/@tailwindcss/postcss/dist/index.js:8:3443)
+    at async LazyResult.runAsync (home/runner/workspace/node_modules/next/node_modules/postcss/lib/lazy-result.js:261:11)
+    at async Span.traceAsyncFn (home/runner/workspace/node_modules/next/dist/trace/trace.js:157:20)
+    at async home/runner/workspace/node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js:55:22
+    at async Span.traceAsyncFn (home/runner/workspace/node_modules/next/dist/trace/trace.js:157:20)
+    at onInvalidCandidate (/home/runner/workspace/node_modules/tailwindcss/dist/lib.js:17:347)
+    at ie (/home/runner/workspace/node_modules/tailwindcss/dist/lib.js:12:116889)
+    at Ve (/home/runner/workspace/node_modules/tailwindcss/dist/lib.js:17:310)
+    at qr (/home/runner/workspace/node_modules/tailwindcss/dist/lib.js:33:780)
+    at async Hr (/home/runner/workspace/node_modules/tailwindcss/dist/lib.js:33:1071)
+    at async ot (/home/runner/workspace/node_modules/@tailwindcss/node/dist/index.js:10:3272)
+    at async p (/home/runner/workspace/node_modules/@tailwindcss/postcss/dist/index.js:8:3242)
+    at async Object.Once (/home/runner/workspace/node_modules/@tailwindcss/postcss/dist/index.js:8:3443)
+    at async LazyResult.runAsync (/home/runner/workspace/node_modules/next/node_modules/postcss/lib/lazy-result.js:261:11)
+    at async Span.traceAsyncFn (/home/runner/workspace/node_modules/next/dist/trace/trace.js:157:20)
+    at async (/home/runner/workspace/node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js:55:22)
+    at async Span.traceAsyncFn (/home/runner/workspace/node_modules/next/dist/trace/trace.js:157:20)
+    at processResult (/home/runner/workspace/node_modules/next/dist/compiled/webpack/bundle5.js:29:407111)
+    at <unknown> (/home/runner/workspace/node_modules/next/dist/compiled/webpack/bundle5.js:29:408906)
+    at <unknown> (/home/runner/workspace/node_modules/next/dist/compiled/loader-runner/LoaderRunner.js:1:8645)
+    at <unknown> (/home/runner/workspace/node_modules/next/dist/compiled/loader-runner/LoaderRunner.js:1:5828)
+    at r.callback (/home/runner/workspace/node_modules/next/dist/compiled/loader-runner/LoaderRunner.js:1:4039)
+    at <unknown> (/home/runner/workspace/node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js:122:37)
+getServerError @ node-stack-frames.js:49
+eval @ index.js:646
+setTimeout
+hydrate @ index.js:624
+await in hydrate
+pageBootstrap @ page-bootstrap.js:28
+eval @ next-dev.js:24
+Promise.then
+eval @ next-dev.js:22
+(pages-dir-browser)/../node_modules/next/dist/client/next-dev.js @ main.js:1447
+options.factory @ webpack.js:644
+__webpack_require__ @ webpack.js:37
+__webpack_exec__ @ main.js:2593
+(anonymous) @ main.js:2594
+webpackJsonpCallback @ webpack.js:1187
+(anonymous) @ main.js:9
+categories:1 Unchecked runtime.lastError: Could not establish connection. Receiving end does not exist.
+favicon.ico:1 
+            
+            
+           GET https://f983daf1-bd62-47b0-b629-26314f3bcb7a-00-s70cy84odon4.picard.replit.dev:3000/favicon.ico 404 (Not Found)
+websocket.js:85 WebSocket connection to 'wss://f983daf1-bd62-47b0-b629-26314f3bcb7a-00-s70cy84odon4.picard.replit.dev:3000/_next/webpack-hmr' failed: 
+init @ websocket.js:85
+connectHMR @ websocket.js:91
+pageBootstrap @ page-bootstrap.js:24
+eval @ next-dev.js:24
+websocket.js:85 WebSocket connection to 'wss://f983daf1-bd62-47b0-b629-26314f3bcb7a-00-s70cy84odon4.picard.replit.dev:3000/_next/webpack-hmr' failed: 
+init @ websocket.js:85
+websocket.js:85 WebSocket connection to 'wss://f983daf1-bd62-47b0-b629-26314f3bcb7a-00-s70cy84odon4.picard.replit.dev:3000/_next/webpack-hmr' failed: 
+init @ websocket.js:85
+websocket.js:85 WebSocket connection to 'wss://f983daf1-bd62-47b0-b629-26314f3bcb7a-00-s70cy84odon4.picard.replit.dev:3000/_next/webpack-hmr' failed: 
+init @ websocket.js:85
+websocket.js:85 WebSocket connection to 'wss://f983daf1-bd62-47b0-b629-26314f3bcb7a-00-s70cy84odon4.picard.replit.dev:3000/_next/webpack-hmr' failed: 
+init @ websocket.js:85
+websocket.js:85 WebSocket connection to 'wss://f983daf1-bd62-47b0-b629-26314f3bcb7a-00-s70cy84odon4.picard.replit.dev:3000/_next/webpack-hmr' failed: 
+init @ websocket.js:85

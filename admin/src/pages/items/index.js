@@ -1,11 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import Head from 'next/head';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { fetchItems, fetchCategories, deleteItem, fetchItemsByCategory, searchItemsByName } from '../../lib/api';
-import Card from '../../components/Card';
-import Alert from '../../components/Alert';
-import { FiEdit, FiTrash2, FiPlus, FiSearch, FiFilter, FiX, FiCoffee, FiDollarSign, FiTag } from 'react-icons/fi';
+import React, { useState, useEffect } from "react";
+import Head from "next/head";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import {
+  fetchItems,
+  fetchCategories,
+  deleteItem,
+  fetchItemsByCategory,
+  searchItemsByName,
+} from "../../lib/api";
+import Card from "../../components/Card";
+import Alert from "../../components/Alert";
+import {
+  FiEdit,
+  FiTrash2,
+  FiPlus,
+  FiSearch,
+  FiFilter,
+  FiX,
+  FiCoffee,
+  FiDollarSign,
+  FiTag,
+} from "react-icons/fi";
 
 export default function Items() {
   const router = useRouter();
@@ -15,7 +31,7 @@ export default function Items() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showActiveOnly, setShowActiveOnly] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [currentFilter, setCurrentFilter] = useState(null);
   const [itemToDelete, setItemToDelete] = useState(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -27,48 +43,48 @@ export default function Items() {
     const loadData = async () => {
       try {
         setLoading(true);
-        
+
         // Fetch categories first to build the lookup map
         const categoriesData = await fetchCategories();
         if (categoriesData && Array.isArray(categoriesData)) {
           setCategories(categoriesData);
-          
+
           // Create a map for easy lookups
           const catMap = {};
-          categoriesData.forEach(cat => {
+          categoriesData.forEach((cat) => {
             if (cat && cat.uniqId) {
-              catMap[cat.uniqId] = cat.name || 'Unknown';
+              catMap[cat.uniqId] = cat.name || "Unknown";
             }
           });
           setCategoryMap(catMap);
         } else {
-          console.warn('Categories data is not in expected format');
+          console.warn("Categories data is not in expected format");
           setCategories([]);
           setCategoryMap({});
         }
-        
+
         // Fetch items based on active filter
-        const itemsData = await fetchItems({ 
-          activeOnly: showActiveOnly 
+        const itemsData = await fetchItems({
+          activeOnly: showActiveOnly,
         });
-        
+
         if (itemsData && Array.isArray(itemsData)) {
           setItems(itemsData);
           setError(null);
         } else {
-          console.warn('Items data is not in expected format');
+          console.warn("Items data is not in expected format");
           setItems([]);
-          setError('Failed to load items in the expected format.');
+          setError("Failed to load items in the expected format.");
         }
       } catch (err) {
-        console.error('Failed to load data:', err);
-        setError('Failed to load items. The server might be unavailable.');
+        console.error("Failed to load data:", err);
+        setError("Failed to load items. The server might be unavailable.");
         setItems([]);
       } finally {
         setLoading(false);
       }
     };
-    
+
     loadData();
   }, [showActiveOnly]);
 
@@ -79,97 +95,103 @@ export default function Items() {
         // If search is cleared, reload all items
         try {
           setLoading(true);
-          const itemsData = await fetchItems({ 
-            activeOnly: showActiveOnly 
+          const itemsData = await fetchItems({
+            activeOnly: showActiveOnly,
           });
-          
+
           if (itemsData && Array.isArray(itemsData)) {
             setItems(itemsData);
             setCurrentFilter(null);
             setError(null);
           } else {
-            console.warn('Items data is not in expected format');
+            console.warn("Items data is not in expected format");
             setItems([]);
-            setError('Failed to load items in the expected format.');
+            setError("Failed to load items in the expected format.");
           }
         } catch (err) {
-          console.error('Failed to load items after search cleared:', err);
-          setError('Failed to load items. Please try again.');
+          console.error("Failed to load items after search cleared:", err);
+          setError("Failed to load items. Please try again.");
           setItems([]);
         } finally {
           setLoading(false);
         }
         return;
       }
-      
+
       try {
         setLoading(true);
         const searchResults = await searchItemsByName(searchTerm, {
-          activeOnly: showActiveOnly
+          activeOnly: showActiveOnly,
         });
-        
+
         if (searchResults && Array.isArray(searchResults)) {
           setItems(searchResults);
-          setCurrentFilter({ type: 'search', value: searchTerm });
+          setCurrentFilter({ type: "search", value: searchTerm });
           setError(null);
         } else {
-          console.warn('Search results are not in expected format');
+          console.warn("Search results are not in expected format");
           setItems([]);
-          setError('Failed to get search results in the expected format.');
+          setError("Failed to get search results in the expected format.");
         }
       } catch (err) {
-        console.error('Search failed:', err);
-        setError('Failed to search items. Please try again.');
+        console.error("Search failed:", err);
+        setError("Failed to search items. Please try again.");
         setItems([]);
       } finally {
         setLoading(false);
       }
     };
-    
+
     // Debounce search to avoid too many API calls
     const debounceTimeout = setTimeout(() => {
       handleSearch();
     }, 300);
-    
+
     return () => clearTimeout(debounceTimeout);
   }, [searchTerm, showActiveOnly]);
 
   // Handle filtering by category
   const handleFilterByCategory = async (categoryUniqId) => {
-    if (currentFilter?.type === 'category' && currentFilter?.value === categoryUniqId) {
+    if (
+      currentFilter?.type === "category" &&
+      currentFilter?.value === categoryUniqId
+    ) {
       // If clicking the same filter, clear it
       try {
         setLoading(true);
-        const itemsData = await fetchItems({ 
-          activeOnly: showActiveOnly 
+        const itemsData = await fetchItems({
+          activeOnly: showActiveOnly,
         });
         setItems(itemsData);
         setCurrentFilter(null);
       } catch (err) {
-        console.error('Failed to clear category filter:', err);
-        setError('Failed to clear filter. Please try again.');
+        console.error("Failed to clear category filter:", err);
+        setError("Failed to clear filter. Please try again.");
       } finally {
         setLoading(false);
       }
       return;
     }
-    
+
     try {
       setLoading(true);
-      const filteredItems = await fetchItemsByCategory(categoryUniqId, showActiveOnly);
-      
+      const filteredItems = await fetchItemsByCategory(
+        categoryUniqId,
+        showActiveOnly,
+      );
+
       if (filteredItems && Array.isArray(filteredItems)) {
         setItems(filteredItems);
-        setCurrentFilter({ type: 'category', value: categoryUniqId });
+        setCurrentFilter({ type: "category", value: categoryUniqId });
         setError(null);
       } else {
-        console.warn('Category filter results are not in expected format');
+        console.warn("Category filter results are not in expected format");
         setItems([]);
-        setError('Failed to get category items in the expected format.');
+        setError("Failed to get category items in the expected format.");
       }
     } catch (err) {
-      console.error('Failed to filter by category:', err);
-      setError('Failed to filter items. Please try again.');
+      console.error("Failed to filter by category:", err);
+      setError("Failed to filter items. Please try again.");
       setItems([]);
     } finally {
       setLoading(false);
@@ -178,18 +200,18 @@ export default function Items() {
 
   // Clear all filters
   const clearFilters = async () => {
-    setSearchTerm('');
+    setSearchTerm("");
     setCurrentFilter(null);
-    
+
     try {
       setLoading(true);
-      const itemsData = await fetchItems({ 
-        activeOnly: showActiveOnly 
+      const itemsData = await fetchItems({
+        activeOnly: showActiveOnly,
       });
       setItems(itemsData);
     } catch (err) {
-      console.error('Failed to clear filters:', err);
-      setError('Failed to clear filters. Please try again.');
+      console.error("Failed to clear filters:", err);
+      setError("Failed to clear filters. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -203,26 +225,28 @@ export default function Items() {
 
   const handleDelete = async () => {
     if (!itemToDelete) return;
-    
+
     try {
       setDeleteInProgress(true);
       await deleteItem(itemToDelete._id);
-      
+
       // Remove item from list
-      setItems(items.filter(item => item._id !== itemToDelete._id));
-      setSuccessMessage(`"${itemToDelete.name}" has been deleted successfully.`);
-      
+      setItems(items.filter((item) => item._id !== itemToDelete._id));
+      setSuccessMessage(
+        `"${itemToDelete.name}" has been deleted successfully.`,
+      );
+
       // Reset state
       setItemToDelete(null);
       setShowDeleteConfirm(false);
-      
+
       // Auto-hide success message after 3 seconds
       setTimeout(() => {
         setSuccessMessage(null);
       }, 3000);
     } catch (err) {
-      console.error('Delete failed:', err);
-      setError('Failed to delete item. Please try again.');
+      console.error("Delete failed:", err);
+      setError("Failed to delete item. Please try again.");
       setShowDeleteConfirm(false);
     } finally {
       setDeleteInProgress(false);
@@ -234,43 +258,40 @@ export default function Items() {
       <Head>
         <title>Items - Cafe Admin</title>
       </Head>
-
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Menu Items</h1>
           <p className="text-gray-600 mt-1">
-            {loading ? 'Loading...' : `${items.length} items found`}
+            {loading ? "Loading..." : `${items.length} items found`}
             {currentFilter && (
-              <span> • Filtered by {currentFilter.type === 'search' ? 'search' : 'category'}</span>
+              <span>
+                {" "}
+                • Filtered by{" "}
+                {currentFilter.type === "search" ? "search" : "category"}
+              </span>
             )}
           </p>
         </div>
-        <Link
-          href="/items/new"
-          className="btn btn-primary"
-        >
+        <Link href="/items/new" className="btn btn-primary">
           <FiPlus className="mr-2" /> Add Item
         </Link>
       </div>
-
       {error && (
-        <Alert 
-          type="error" 
-          message={error} 
-          onClose={() => setError(null)} 
+        <Alert
+          type="error"
+          message={error}
+          onClose={() => setError(null)}
           className="mb-6"
         />
       )}
-
       {successMessage && (
-        <Alert 
-          type="success" 
-          message={successMessage} 
-          onClose={() => setSuccessMessage(null)} 
+        <Alert
+          type="success"
+          message={successMessage}
+          onClose={() => setSuccessMessage(null)}
           className="mb-6"
         />
       )}
-
       {/* Filters and search */}
       <Card className="mb-6">
         <div className="flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0">
@@ -293,11 +314,11 @@ export default function Items() {
                 onClick={() => setShowActiveOnly(!showActiveOnly)}
                 className={`
                   inline-flex items-center px-3 py-2 border rounded-md text-sm
-                  ${showActiveOnly ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-white text-gray-700 border-gray-300'}
+                  ${showActiveOnly ? "bg-blue-50 text-blue-700 border-blue-200" : "bg-white text-gray-700 border-gray-300"}
                 `}
               >
                 <FiFilter className="mr-2 h-4 w-4" />
-                {showActiveOnly ? 'Active Only' : 'All Items'}
+                {showActiveOnly ? "Active Only" : "All Items"}
               </button>
             </div>
             {currentFilter && (
@@ -313,23 +334,28 @@ export default function Items() {
           </div>
         </div>
       </Card>
-
-      {/* Category filters */}
-      <div className="flex flex-wrap gap-2 mb-6">
-        {categories.map(category => (
-          <button
-            key={category.uniqId}
-            onClick={() => handleFilterByCategory(category.uniqId)}
-            className={`
-              px-3 py-1 text-xs font-medium rounded-full
-              ${currentFilter?.type === 'category' && currentFilter?.value === category.uniqId
-                ? 'bg-blue-100 text-blue-800' 
-                : 'bg-gray-100 text-gray-800 hover:bg-gray-200'}
-              ${!category.isActive && 'opacity-60'}
-            `}
-          >
-            {category.name}
-          </button>
+      {/* Enhanced Category Filters with Tailwind design */}
+      <div className="flex flex-wrap gap-4 p-4 bg-white rounded-lg shadow-md mb-8">
+        {categories.map((category) => (
+          <div key={category.uniqId} className="relative inline-block">
+            <button
+              onClick={() => handleFilterByCategory(category.uniqId)}
+              className={`
+                transition-transform transform-gpu hover:scale-105 hover:bg-opacity-90
+                px-5 py-3 text-sm font-semibold rounded-full shadow-lg focus:outline-none focus:ring-2
+                ${
+                  currentFilter?.type === "category" &&
+                  currentFilter?.value === category.uniqId
+                    ? "bg-blue-500 text-white focus:ring-blue-400"
+                    : "bg-gray-300 text-gray-800 hover:bg-gray-400 focus:ring-gray-400"
+                }
+                ${!category.isActive && "opacity-60 cursor-not-allowed"}
+              `}
+              disabled={!category.isActive}
+            >
+              {category.name}
+            </button>
+          </div>
         ))}
       </div>
 
@@ -337,7 +363,10 @@ export default function Items() {
       {loading ? (
         <div className="space-y-4">
           {[...Array(3)].map((_, i) => (
-            <div key={i} className="animate-pulse bg-white rounded-lg shadow p-4">
+            <div
+              key={i}
+              className="animate-pulse bg-white rounded-lg shadow p-4"
+            >
               <div className="h-6 bg-gray-200 rounded w-1/4 mb-4"></div>
               <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
               <div className="h-4 bg-gray-200 rounded w-1/2"></div>
@@ -347,48 +376,53 @@ export default function Items() {
       ) : items.length === 0 ? (
         <div className="text-center p-8 bg-white rounded-lg shadow">
           <div className="text-gray-400 mb-4">
-            <svg className="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+            <svg
+              className="mx-auto h-12 w-12"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              style={{ maxHeight: "50px" }}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1}
+                d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
+              />
             </svg>
           </div>
           <h3 className="text-lg font-medium text-gray-900 mb-1">
-            {currentFilter?.type === 'search' 
-              ? 'No matching items found' 
-              : currentFilter?.type === 'category'
-              ? `No items in this category`
-              : 'No menu items available'}
+            {currentFilter?.type === "search"
+              ? "No matching items found"
+              : currentFilter?.type === "category"
+                ? `No items in this category`
+                : "No menu items available"}
           </h3>
           <p className="text-gray-500 mb-4">
-            {currentFilter?.type === 'search' 
-              ? 'Try a different search term or clear your filters'
-              : currentFilter?.type === 'category'
-              ? `This category doesn't have any items yet`
-              : showActiveOnly
-              ? 'No active items available. Try switching to view all items.'
-              : 'Create your first menu item to get started'}
+            {currentFilter?.type === "search"
+              ? "Try a different search term or clear your filters"
+              : currentFilter?.type === "category"
+                ? `This category doesn't have any items yet`
+                : showActiveOnly
+                  ? "No active items available. Try switching to view all items."
+                  : "Create your first menu item to get started"}
           </p>
-          <Link
-            href="/items/new"
-            className="btn btn-primary"
-          >
-            <FiPlus className="mr-2" /> Add First Item
-          </Link>
         </div>
       ) : (
         <div className="items-list-container">
           {items.map((item) => (
-            <div 
-              key={item._id} 
-              className={`menu-item-card ${!item.isActive ? 'opacity-70' : ''}`}
+            <div
+              key={item._id}
+              className={`menu-item-card ${!item.isActive ? "opacity-70" : ""}`}
             >
               <div className="menu-item-image">
                 {item.imageUrl ? (
-                  <img 
-                    src={item.imageUrl} 
+                  <img
+                    src={item.imageUrl}
                     alt={item.name}
                     onError={(e) => {
                       e.target.onerror = null;
-                      e.target.style.display = 'none';
+                      e.target.style.display = "none";
                       e.target.parentNode.innerHTML = `<div class="flex h-full w-full items-center justify-center bg-gray-200">
                         <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400">
                           <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
@@ -405,7 +439,7 @@ export default function Items() {
                     <FiCoffee className="h-16 w-16 text-gray-400" />
                   </div>
                 )}
-                
+
                 {/* Status and New badges overlay */}
                 <div className="menu-item-badges">
                   {item.isNew && (
@@ -413,37 +447,39 @@ export default function Items() {
                       NEW
                     </div>
                   )}
-                  <div className={`menu-item-badge ${
-                    item.isActive 
-                      ? 'bg-green-100 text-green-800' 
-                      : 'bg-gray-100 text-gray-800'
-                  }`}>
-                    {item.isActive ? 'ACTIVE' : 'INACTIVE'}
+                  <div
+                    className={`menu-item-badge ${
+                      item.isActive
+                        ? "bg-green-100 text-green-800"
+                        : "bg-gray-100 text-gray-800"
+                    }`}
+                  >
+                    {item.isActive ? "ACTIVE" : "INACTIVE"}
                   </div>
                 </div>
               </div>
-              
+
               {/* Content */}
               <div className="menu-item-content">
                 <h3 className="menu-item-title" title={item.name}>
                   {item.name}
                 </h3>
-                
+
                 <div className="menu-item-category">
                   <FiTag className="mr-2" />
-                  {categoryMap[item.categoryUniqId] || 'Unknown'}
+                  {categoryMap[item.categoryUniqId] || "Unknown"}
                 </div>
-                
+
                 {item.description && (
                   <p className="menu-item-description" title={item.description}>
                     {item.description}
                   </p>
                 )}
-                
+
                 <div className="menu-item-price">
                   {item.price.toFixed(2)} AZN
                 </div>
-                
+
                 <div className="menu-item-actions">
                   <Link
                     href={`/items/edit/${item._id}`}
@@ -463,7 +499,6 @@ export default function Items() {
           ))}
         </div>
       )}
-
       {/* Delete confirmation modal */}
       {showDeleteConfirm && (
         <div className="modal-overlay">
@@ -477,7 +512,10 @@ export default function Items() {
                 <div className="modal-title-container">
                   <h3 className="modal-title">Delete Item</h3>
                   <div className="modal-description">
-                    <p>Are you sure you want to delete "{itemToDelete?.name}"? This action cannot be undone.</p>
+                    <p>
+                      Are you sure you want to delete "{itemToDelete?.name}"?
+                      This action cannot be undone.
+                    </p>
                   </div>
                 </div>
               </div>
@@ -488,7 +526,7 @@ export default function Items() {
                   onClick={handleDelete}
                   disabled={deleteInProgress}
                 >
-                  {deleteInProgress ? 'Deleting...' : 'Delete'}
+                  {deleteInProgress ? "Deleting..." : "Delete"}
                 </button>
                 <button
                   type="button"
