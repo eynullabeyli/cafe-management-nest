@@ -151,32 +151,51 @@ export default function Categories() {
         </Card>
       </div>
 
-      {/* Filter Tabs */}
-      <div className="flex mb-4 border-b border-gray-200">
-        <button
-          className={`px-4 py-2 text-sm font-medium ${filter === 'all' 
-            ? 'text-blue-600 border-b-2 border-blue-500' 
-            : 'text-gray-500 hover:text-gray-700'}`}
-          onClick={() => setFilter('all')}
-        >
-          All ({categories.length})
-        </button>
-        <button
-          className={`px-4 py-2 text-sm font-medium ${filter === 'active' 
-            ? 'text-green-600 border-b-2 border-green-500' 
-            : 'text-gray-500 hover:text-gray-700'}`}
-          onClick={() => setFilter('active')}
-        >
-          Active ({activeCount})
-        </button>
-        <button
-          className={`px-4 py-2 text-sm font-medium ${filter === 'inactive' 
-            ? 'text-gray-600 border-b-2 border-gray-500' 
-            : 'text-gray-500 hover:text-gray-700'}`}
-          onClick={() => setFilter('inactive')}
-        >
-          Inactive ({inactiveCount})
-        </button>
+      {/* Stylish Filter Selector */}
+      <div className="fancy-filter-container mb-6">
+        <div className="fancy-filter">
+          <div 
+            className={`fancy-filter-option ${filter === 'all' ? 'active' : ''}`}
+            onClick={() => setFilter('all')}
+          >
+            <div className="filter-icon all">
+              <FiLayers />
+            </div>
+            <div className="filter-content">
+              <span className="filter-label">All</span>
+              <span className="filter-count">{categories.length}</span>
+            </div>
+            <div className="filter-indicator"></div>
+          </div>
+          
+          <div 
+            className={`fancy-filter-option ${filter === 'active' ? 'active' : ''}`}
+            onClick={() => setFilter('active')}
+          >
+            <div className="filter-icon active">
+              <FiCheck />
+            </div>
+            <div className="filter-content">
+              <span className="filter-label">Active</span>
+              <span className="filter-count">{activeCount}</span>
+            </div>
+            <div className="filter-indicator"></div>
+          </div>
+          
+          <div 
+            className={`fancy-filter-option ${filter === 'inactive' ? 'active' : ''}`}
+            onClick={() => setFilter('inactive')}
+          >
+            <div className="filter-icon inactive">
+              <FiX />
+            </div>
+            <div className="filter-content">
+              <span className="filter-label">Inactive</span>
+              <span className="filter-count">{inactiveCount}</span>
+            </div>
+            <div className="filter-indicator"></div>
+          </div>
+        </div>
       </div>
 
       <Card>
@@ -204,70 +223,71 @@ export default function Categories() {
             </Link>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Name
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Unique ID
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {filteredCategories.map((category) => (
-                  <tr key={category._id} className="hover:bg-gray-50 transition-colors duration-150">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">{category.name}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-xs font-mono bg-gray-100 text-gray-800 py-1 px-2 rounded inline-block">
-                        {category.uniqId}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
-                        ${category.isActive 
-                          ? 'bg-green-100 text-green-800 border border-green-200' 
-                          : 'bg-gray-100 text-gray-800 border border-gray-200'}`}>
+          <div className="overflow-hidden rounded-lg">
+            <div className="category-grid">
+              {filteredCategories.map((category) => (
+                <div key={category._id} className="category-card">
+                  <div className="category-card-inner">
+                    <div className="category-header">
+                      <h3 className="category-title">{category.name}</h3>
+                      <span 
+                        className={`category-status ${category.isActive ? 'active' : 'inactive'}`}
+                        title={category.isActive ? 'Active - Visible to customers' : 'Inactive - Hidden from customers'}
+                      >
                         {category.isActive ? 'Active' : 'Inactive'}
                       </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <div className="flex justify-end space-x-3">
-                        <Link 
-                          href={`/categories/edit/${category._id}`}
-                          className="text-blue-600 hover:text-blue-900 bg-blue-50 hover:bg-blue-100 p-2 rounded-full transition-colors duration-150"
-                          title="Edit Category"
-                        >
-                          <FiEdit2 className="h-4 w-4" />
-                        </Link>
-                        <button
-                          onClick={() => handleDelete(category._id)}
-                          disabled={deleteStatus.pending && deleteStatus.id === category._id}
-                          className="text-red-600 hover:text-red-900 bg-red-50 hover:bg-red-100 p-2 rounded-full transition-colors duration-150 disabled:opacity-50"
-                          title="Delete Category"
-                        >
-                          {deleteStatus.pending && deleteStatus.id === category._id ? (
-                            <FiRefreshCw className="h-4 w-4 animate-spin" />
-                          ) : (
-                            <FiTrash2 className="h-4 w-4" />
-                          )}
-                        </button>
+                    </div>
+                    
+                    <div className="category-id">
+                      <span className="category-id-label">Unique ID:</span>
+                      <code className="category-id-value">{category.uniqId}</code>
+                    </div>
+                    
+                    <div className="category-meta">
+                      <div className="category-meta-item">
+                        <span className="meta-label">Created</span>
+                        <span className="meta-value">
+                          {new Date(category.createdAt).toLocaleDateString()}
+                        </span>
                       </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                      <div className="category-meta-item">
+                        <span className="meta-label">Last Updated</span>
+                        <span className="meta-value">
+                          {new Date(category.updatedAt).toLocaleDateString()}
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <div className="category-actions">
+                      <Link 
+                        href={`/categories/edit/${category._id}`}
+                        className="category-action edit"
+                      >
+                        <FiEdit2 className="action-icon" />
+                        <span>Edit</span>
+                      </Link>
+                      <button
+                        onClick={() => handleDelete(category._id)}
+                        disabled={deleteStatus.pending && deleteStatus.id === category._id}
+                        className="category-action delete"
+                      >
+                        {deleteStatus.pending && deleteStatus.id === category._id ? (
+                          <>
+                            <FiRefreshCw className="action-icon spin" />
+                            <span>Deleting...</span>
+                          </>
+                        ) : (
+                          <>
+                            <FiTrash2 className="action-icon" />
+                            <span>Delete</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </Card>
