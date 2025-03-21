@@ -16,7 +16,6 @@ const config_1 = require("@nestjs/config");
 const mongoose_1 = require("@nestjs/mongoose");
 const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
-const users_module_1 = require("./users/users.module");
 const categories_module_1 = require("./categories/categories.module");
 const items_module_1 = require("./items/items.module");
 const configuration_1 = require("./config/configuration");
@@ -69,7 +68,6 @@ exports.AppModule = AppModule = AppModule_1 = __decorate([
                 },
                 inject: [config_1.ConfigService],
             }),
-            users_module_1.UsersModule,
             categories_module_1.CategoriesModule,
             items_module_1.ItemsModule,
         ],

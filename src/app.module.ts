@@ -3,7 +3,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UsersModule } from './users/users.module';
 import { CategoriesModule } from './categories/categories.module';
 import { ItemsModule } from './items/items.module';
 import configuration from './config/configuration';
@@ -43,7 +42,6 @@ import configuration from './config/configuration';
     }),
     
     // Feature modules
-    UsersModule,
     CategoriesModule,
     ItemsModule,
   ],

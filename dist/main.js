@@ -46,7 +46,6 @@ async function bootstrap() {
             .setTitle('Cafe Management API')
             .setDescription('API documentation for Cafe Management System')
             .setVersion('1.0')
-            .addTag('users', 'User management endpoints')
             .addTag('categories', 'Category management endpoints')
             .addTag('items', 'Item management endpoints')
             .build();
@@ -90,7 +89,6 @@ async function startMinimalAppWithoutDatabase() {
         .setTitle('Cafe Management API')
         .setDescription('API documentation for Cafe Management System (Limited Functionality)')
         .setVersion('1.0')
-        .addTag('users', 'User management endpoints')
         .addTag('categories', 'Category management endpoints')
         .addTag('items', 'Item management endpoints')
         .build();
