@@ -1,20 +1,16 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    "./src/pages/**/*.{js,ts,jsx,tsx}",
-    "./src/components/**/*.{js,ts,jsx,tsx}",
+    './src/pages/**/*.{js,ts,jsx,tsx}',
+    './src/components/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
     extend: {
       colors: {
-        primary: '#3b82f6',
-        secondary: '#f97316',
-        background: '#f8fafc',
-        card: '#ffffff',
-        success: '#10b981',
-        danger: '#ef4444',
-        warning: '#f59e0b',
-        info: '#3b82f6',
+        primary: {
+          DEFAULT: 'var(--primary-color)',
+          dark: 'var(--primary-color-dark)',
+        },
       },
     },
   },

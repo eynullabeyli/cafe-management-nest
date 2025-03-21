@@ -1,158 +1,181 @@
 import axios from 'axios';
 
-// API base URL - when running locally it will proxy through Next.js to the NestJS server
-const API_URL = '/api';
+// Create an axios instance with base URL and default headers
+const api = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
 
-// Categories API
+// Error handler helper
+const handleApiError = (error) => {
+  console.error('API Error:', error.response || error);
+  
+  if (error.response && error.response.data && error.response.data.message) {
+    throw new Error(error.response.data.message);
+  } else if (error.message) {
+    throw new Error(error.message);
+  } else {
+    throw new Error('An unexpected error occurred');
+  }
+};
+
+// Categories API functions
 export const fetchCategories = async (activeOnly = false) => {
   try {
-    const response = await axios.get(`${API_URL}/categories?activeOnly=${activeOnly}`);
+    const params = activeOnly ? { activeOnly: 'true' } : {};
+    const response = await api.get('/categories', { params });
     return response.data;
   } catch (error) {
-    console.error('Error fetching categories:', error);
-    throw error;
+    handleApiError(error);
   }
 };
 
 export const fetchCategory = async (id) => {
   try {
-    const response = await axios.get(`${API_URL}/categories/${id}`);
+    const response = await api.get(`/categories/${id}`);
     return response.data;
   } catch (error) {
-    console.error(`Error fetching category ${id}:`, error);
-    throw error;
+    handleApiError(error);
   }
 };
 
 export const fetchCategoryByUniqId = async (uniqId) => {
   try {
-    const response = await axios.get(`${API_URL}/categories/uniqId/${uniqId}`);
+    const response = await api.get(`/categories/uniqId/${uniqId}`);
     return response.data;
   } catch (error) {
-    console.error(`Error fetching category by uniqId ${uniqId}:`, error);
-    throw error;
+    handleApiError(error);
   }
 };
 
 export const createCategory = async (categoryData) => {
   try {
-    const response = await axios.post(`${API_URL}/categories`, categoryData);
+    const response = await api.post('/categories', categoryData);
     return response.data;
   } catch (error) {
-    console.error('Error creating category:', error);
-    throw error;
+    handleApiError(error);
   }
 };
 
 export const updateCategory = async (id, categoryData) => {
   try {
-    const response = await axios.put(`${API_URL}/categories/${id}`, categoryData);
+    const response = await api.put(`/categories/${id}`, categoryData);
     return response.data;
   } catch (error) {
-    console.error(`Error updating category ${id}:`, error);
-    throw error;
+    handleApiError(error);
   }
 };
 
 export const deleteCategory = async (id) => {
   try {
-    const response = await axios.delete(`${API_URL}/categories/${id}`);
+    const response = await api.delete(`/categories/${id}`);
     return response.data;
   } catch (error) {
-    console.error(`Error deleting category ${id}:`, error);
-    throw error;
+    handleApiError(error);
   }
 };
 
-// Items API
+// Items API functions
 export const fetchItems = async (options = {}) => {
   try {
-    const { limit, skip, activeOnly } = options;
-    const params = new URLSearchParams();
+    const params = {};
     
-    if (limit) params.append('limit', limit);
-    if (skip) params.append('skip', skip);
-    if (activeOnly !== undefined) params.append('activeOnly', activeOnly);
+    if (options.limit) params.limit = options.limit;
+    if (options.skip) params.skip = options.skip;
+    if (options.activeOnly !== undefined) params.activeOnly = options.activeOnly;
     
-    const queryString = params.toString();
-    const url = `${API_URL}/items${queryString ? `?${queryString}` : ''}`;
-    
-    const response = await axios.get(url);
+    const response = await api.get('/items', { params });
     return response.data;
   } catch (error) {
-    console.error('Error fetching items:', error);
-    throw error;
+    handleApiError(error);
   }
 };
 
 export const fetchItem = async (id) => {
   try {
-    const response = await axios.get(`${API_URL}/items/${id}`);
+    const response = await api.get(`/items/${id}`);
     return response.data;
   } catch (error) {
-    console.error(`Error fetching item ${id}:`, error);
-    throw error;
+    handleApiError(error);
   }
 };
 
 export const fetchItemsByCategory = async (categoryUniqId, activeOnly = false) => {
   try {
-    const response = await axios.get(
-      `${API_URL}/items/category/${categoryUniqId}?activeOnly=${activeOnly}`
-    );
+    const params = activeOnly ? { activeOnly: 'true' } : {};
+    const response = await api.get(`/items/category/${categoryUniqId}`, { params });
     return response.data;
   } catch (error) {
-    console.error(`Error fetching items by category ${categoryUniqId}:`, error);
-    throw error;
+    handleApiError(error);
   }
 };
 
 export const searchItemsByName = async (nameQuery, options = {}) => {
   try {
-    const { limit, skip, activeOnly } = options;
-    const params = new URLSearchParams({ nameQuery });
+    const params = { nameQuery };
     
-    if (limit) params.append('limit', limit);
-    if (skip) params.append('skip', skip);
-    if (activeOnly !== undefined) params.append('activeOnly', activeOnly);
+    if (options.limit) params.limit = options.limit;
+    if (options.skip) params.skip = options.skip;
+    if (options.activeOnly !== undefined) params.activeOnly = options.activeOnly;
     
-    const queryString = params.toString();
-    const url = `${API_URL}/items/search/name?${queryString}`;
-    
-    const response = await axios.get(url);
+    const response = await api.get(`/items/search/name`, { params });
     return response.data;
   } catch (error) {
-    console.error(`Error searching items by name ${nameQuery}:`, error);
-    throw error;
+    handleApiError(error);
   }
 };
 
 export const createItem = async (itemData) => {
   try {
-    const response = await axios.post(`${API_URL}/items`, itemData);
+    const response = await api.post('/items', itemData);
     return response.data;
   } catch (error) {
-    console.error('Error creating item:', error);
-    throw error;
+    handleApiError(error);
   }
 };
 
 export const updateItem = async (id, itemData) => {
   try {
-    const response = await axios.put(`${API_URL}/items/${id}`, itemData);
+    const response = await api.put(`/items/${id}`, itemData);
     return response.data;
   } catch (error) {
-    console.error(`Error updating item ${id}:`, error);
-    throw error;
+    handleApiError(error);
   }
 };
 
 export const deleteItem = async (id) => {
   try {
-    const response = await axios.delete(`${API_URL}/items/${id}`);
+    const response = await api.delete(`/items/${id}`);
     return response.data;
   } catch (error) {
-    console.error(`Error deleting item ${id}:`, error);
-    throw error;
+    handleApiError(error);
+  }
+};
+
+// Fetch stats
+export const fetchStats = async () => {
+  // This is a placeholder function for fetching dashboard stats
+  // In a real application, this would call a dedicated endpoint
+  try {
+    const [categories, items] = await Promise.all([
+      fetchCategories(),
+      fetchItems()
+    ]);
+    
+    const activeCategories = categories.filter(cat => cat.isActive);
+    const activeItems = items.filter(item => item.isActive);
+    const newItems = items.filter(item => item.isNew);
+    
+    return {
+      totalCategories: categories.length,
+      activeCategories: activeCategories.length,
+      totalItems: items.length,
+      activeItems: activeItems.length,
+      newItems: newItems.length
+    };
+  } catch (error) {
+    handleApiError(error);
   }
 };

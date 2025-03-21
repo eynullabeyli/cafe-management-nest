@@ -2,32 +2,37 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --primary-color: #4f46e5;
+  --primary-color-dark: #4338ca;
+}
+
+body {
+  @apply bg-gray-50 text-gray-800;
+}
+
 @layer components {
   .btn {
-    @apply py-2 px-4 rounded font-medium focus:outline-none focus:ring-2 focus:ring-opacity-50 transition-colors;
+    @apply inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
   }
   
   .btn-primary {
-    @apply bg-primary text-white hover:bg-blue-600 focus:ring-blue-500;
+    @apply text-white bg-primary hover:bg-primary-dark focus:ring-primary;
   }
   
   .btn-secondary {
-    @apply bg-secondary text-white hover:bg-orange-600 focus:ring-orange-500;
+    @apply bg-gray-100 text-gray-700 hover:bg-gray-200 focus:ring-gray-500;
   }
   
   .btn-danger {
-    @apply bg-danger text-white hover:bg-red-600 focus:ring-red-500;
-  }
-  
-  .card {
-    @apply bg-white rounded-lg shadow-md p-6 mb-4;
-  }
-  
-  .form-input {
-    @apply w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50;
+    @apply text-white bg-red-600 hover:bg-red-700 focus:ring-red-500;
   }
   
   .form-label {
     @apply block text-sm font-medium text-gray-700 mb-1;
+  }
+  
+  .form-input {
+    @apply focus:ring-primary focus:border-primary sm:text-sm;
   }
 }
