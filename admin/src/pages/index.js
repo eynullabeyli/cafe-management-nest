@@ -3,7 +3,10 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { fetchStats, apiLoadingState } from '../lib/api';
 import Card from '../components/Card';
-import { FiCoffee, FiGrid, FiPlusCircle, FiTrendingUp, FiTag, FiLoader } from 'react-icons/fi';
+import { 
+  FiCoffee, FiGrid, FiPlusCircle, FiTrendingUp, FiTag, 
+  FiLoader, FiActivity, FiBarChart2, FiLayers, FiDatabase
+} from 'react-icons/fi';
 
 export default function Dashboard() {
   const [stats, setStats] = useState({
@@ -49,13 +52,41 @@ export default function Dashboard() {
     loadStats();
   }, []);
 
+  // Calculate percentage values
+  const categoryActivePercent = stats.totalCategories > 0 
+    ? Math.round((stats.activeCategories / stats.totalCategories) * 100) 
+    : 0;
+  
+  const itemActivePercent = stats.totalItems > 0 
+    ? Math.round((stats.activeItems / stats.totalItems) * 100) 
+    : 0;
+  
+  const newItemPercent = stats.totalItems > 0 
+    ? Math.round((stats.newItems / stats.totalItems) * 100) 
+    : 0;
+
   return (
     <div>
       <Head>
         <title>Dashboard - Cafe Admin</title>
       </Head>
 
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Dashboard</h1>
+      <div className="dashboard-header">
+        <div>
+          <h1 className="page-title">Dashboard</h1>
+          <p className="text-gray-500 mb-6">Welcome to your menu management system</p>
+        </div>
+        <div className="dashboard-action-buttons">
+          <Link href="/items/new" className="fancy-button primary">
+            <FiPlusCircle className="mr-2 h-5 w-5" />
+            New Item
+          </Link>
+          <Link href="/categories/new" className="fancy-button secondary">
+            <FiPlusCircle className="mr-2 h-5 w-5" />
+            New Category
+          </Link>
+        </div>
+      </div>
 
       {error && (
         <div className="mb-6 bg-red-50 border-l-4 border-red-400 p-4 rounded">
@@ -72,138 +103,207 @@ export default function Dashboard() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        <Card className="flex flex-col">
-          <div className="flex items-center">
-            <div className="p-3 rounded-md bg-blue-50 text-blue-700">
-              <FiGrid className="h-6 w-6" />
-            </div>
-            <div className="ml-4">
-              <h3 className="text-lg font-medium text-gray-900">Categories</h3>
-              <div className="mt-1 flex items-baseline">
+      {/* Overview Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-lg font-medium text-blue-800">Menu Overview</h3>
+              <div className="mt-2 text-3xl font-bold text-blue-700">
                 {loading ? (
-                  <div className="h-8 w-24 bg-gray-200 animate-pulse rounded"></div>
+                  <div className="h-8 w-20 bg-blue-200 animate-pulse rounded"></div>
                 ) : (
-                  <>
-                    <p className="text-2xl font-semibold text-gray-900">{stats.totalCategories}</p>
-                    <p className="ml-2 text-sm text-gray-600">
-                      ({stats.activeCategories} active)
-                    </p>
-                  </>
+                  stats.totalItems
                 )}
               </div>
+              <div className="mt-1 text-sm text-blue-600">
+                Total menu items
+              </div>
+            </div>
+            <div className="p-4 bg-blue-100 text-blue-700 rounded-full">
+              <FiBarChart2 className="h-8 w-8" />
             </div>
           </div>
-          <div className="mt-6 self-end">
-            <Link 
-              href="/categories"
-              className="text-sm font-medium text-blue-600 hover:text-blue-500"
-            >
-              View all categories →
-            </Link>
+          
+          <div className="mt-4">
+            <div className="text-xs font-medium text-blue-600 mb-1">
+              {stats.activeItems} items active ({itemActivePercent}%)
+            </div>
+            <div className="w-full bg-blue-200 rounded-full h-2.5">
+              <div 
+                className="bg-blue-600 h-2.5 rounded-full" 
+                style={{ width: `${itemActivePercent}%` }}
+              ></div>
+            </div>
           </div>
         </Card>
 
-        <Card className="flex flex-col">
-          <div className="flex items-center">
-            <div className="p-3 rounded-md bg-green-50 text-green-700">
-              <FiCoffee className="h-6 w-6" />
-            </div>
-            <div className="ml-4">
-              <h3 className="text-lg font-medium text-gray-900">Menu Items</h3>
-              <div className="mt-1 flex items-baseline">
+        <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-lg font-medium text-green-800">Categories</h3>
+              <div className="mt-2 text-3xl font-bold text-green-700">
                 {loading ? (
-                  <div className="h-8 w-24 bg-gray-200 animate-pulse rounded"></div>
+                  <div className="h-8 w-20 bg-green-200 animate-pulse rounded"></div>
                 ) : (
-                  <>
-                    <p className="text-2xl font-semibold text-gray-900">{stats.totalItems}</p>
-                    <p className="ml-2 text-sm text-gray-600">
-                      ({stats.activeItems} active)
-                    </p>
-                  </>
+                  stats.totalCategories
                 )}
               </div>
+              <div className="mt-1 text-sm text-green-600">
+                Total categories
+              </div>
+            </div>
+            <div className="p-4 bg-green-100 text-green-700 rounded-full">
+              <FiLayers className="h-8 w-8" />
             </div>
           </div>
-          <div className="mt-6 self-end">
-            <Link 
-              href="/items"
-              className="text-sm font-medium text-green-600 hover:text-green-500"
-            >
-              View all items →
-            </Link>
+          
+          <div className="mt-4">
+            <div className="text-xs font-medium text-green-600 mb-1">
+              {stats.activeCategories} categories active ({categoryActivePercent}%)
+            </div>
+            <div className="w-full bg-green-200 rounded-full h-2.5">
+              <div 
+                className="bg-green-600 h-2.5 rounded-full" 
+                style={{ width: `${categoryActivePercent}%` }}
+              ></div>
+            </div>
           </div>
         </Card>
 
-        <Card className="flex flex-col">
-          <div className="flex items-center">
-            <div className="p-3 rounded-md bg-purple-50 text-purple-700">
-              <FiTag className="h-6 w-6" />
-            </div>
-            <div className="ml-4">
-              <h3 className="text-lg font-medium text-gray-900">New Items</h3>
-              <div className="mt-1 flex items-baseline">
+        <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-lg font-medium text-purple-800">New Products</h3>
+              <div className="mt-2 text-3xl font-bold text-purple-700">
                 {loading ? (
-                  <div className="h-8 w-24 bg-gray-200 animate-pulse rounded"></div>
+                  <div className="h-8 w-20 bg-purple-200 animate-pulse rounded"></div>
                 ) : (
-                  <p className="text-2xl font-semibold text-gray-900">{stats.newItems}</p>
+                  stats.newItems
                 )}
               </div>
+              <div className="mt-1 text-sm text-purple-600">
+                Items marked as new
+              </div>
+            </div>
+            <div className="p-4 bg-purple-100 text-purple-700 rounded-full">
+              <FiTag className="h-8 w-8" />
             </div>
           </div>
-          <div className="mt-6 self-end">
-            <Link 
-              href="/items/new"
-              className="text-sm font-medium text-purple-600 hover:text-purple-500"
-            >
-              Add new item →
-            </Link>
+          
+          <div className="mt-4">
+            <div className="text-xs font-medium text-purple-600 mb-1">
+              {newItemPercent}% of total items are new
+            </div>
+            <div className="w-full bg-purple-200 rounded-full h-2.5">
+              <div 
+                className="bg-purple-600 h-2.5 rounded-full" 
+                style={{ width: `${newItemPercent}%` }}
+              ></div>
+            </div>
           </div>
         </Card>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Card title="Quick Actions">
+        <Card title="Quick Actions" className="border-t-4 border-blue-500">
           <div className="space-y-4">
             <Link 
-              href="/categories/new"
-              className="flex items-center p-3 text-sm text-gray-700 hover:bg-gray-50 rounded-md"
+              href="/categories"
+              className="flex items-center p-4 text-sm text-gray-700 hover:bg-blue-50 rounded-md transition-colors duration-200"
             >
-              <FiPlusCircle className="h-5 w-5 text-blue-500 mr-3" />
-              <span>Add New Category</span>
+              <div className="p-2 rounded-full bg-blue-100 text-blue-600 mr-3">
+                <FiGrid className="h-5 w-5" />
+              </div>
+              <div>
+                <span className="font-medium block">Manage Categories</span>
+                <span className="text-xs text-gray-500">View, edit and create menu categories</span>
+              </div>
+            </Link>
+            <Link 
+              href="/items"
+              className="flex items-center p-4 text-sm text-gray-700 hover:bg-green-50 rounded-md transition-colors duration-200"
+            >
+              <div className="p-2 rounded-full bg-green-100 text-green-600 mr-3">
+                <FiCoffee className="h-5 w-5" />
+              </div>
+              <div>
+                <span className="font-medium block">Manage Menu Items</span>
+                <span className="text-xs text-gray-500">View, edit and create menu items</span>
+              </div>
             </Link>
             <Link 
               href="/items/new"
-              className="flex items-center p-3 text-sm text-gray-700 hover:bg-gray-50 rounded-md"
+              className="flex items-center p-4 text-sm text-gray-700 hover:bg-purple-50 rounded-md transition-colors duration-200"
             >
-              <FiPlusCircle className="h-5 w-5 text-green-500 mr-3" />
-              <span>Add New Menu Item</span>
+              <div className="p-2 rounded-full bg-purple-100 text-purple-600 mr-3">
+                <FiPlusCircle className="h-5 w-5" />
+              </div>
+              <div>
+                <span className="font-medium block">Add New Menu Item</span>
+                <span className="text-xs text-gray-500">Create a new item for your menu</span>
+              </div>
             </Link>
           </div>
         </Card>
 
-        <Card title="System Status">
-          <div className="space-y-3">
-            <div className="flex justify-between items-center text-sm">
-              <span className="text-gray-600">API Server</span>
-              <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                Online
-              </span>
+        <Card title="System Status" className="border-t-4 border-indigo-500">
+          <div className="space-y-4">
+            <div className="flex items-center p-3">
+              <div className="p-2 rounded-full bg-green-100 text-green-600 mr-3">
+                <FiActivity className="h-5 w-5" />
+              </div>
+              <div className="flex-grow">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm font-medium text-gray-700">API Server</span>
+                  <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                    Online
+                  </span>
+                </div>
+                <div className="text-xs text-gray-500 mt-1">
+                  Last checked: just now
+                </div>
+              </div>
             </div>
-            <div className="flex justify-between items-center text-sm">
-              <span className="text-gray-600">Database Connection</span>
-              <span className="px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                Limited
-              </span>
+            
+            <div className="flex items-center p-3">
+              <div className="p-2 rounded-full bg-yellow-100 text-yellow-600 mr-3">
+                <FiDatabase className="h-5 w-5" />
+              </div>
+              <div className="flex-grow">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm font-medium text-gray-700">Database Connection</span>
+                  <span className="px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                    Limited
+                  </span>
+                </div>
+                <div className="text-xs text-gray-500 mt-1">
+                  Using fallback mechanisms for some operations
+                </div>
+              </div>
             </div>
-            <div className="flex justify-between items-center text-sm">
-              <span className="text-gray-600">Admin Dashboard</span>
-              <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                Online
-              </span>
+            
+            <div className="flex items-center p-3">
+              <div className="p-2 rounded-full bg-green-100 text-green-600 mr-3">
+                <FiGrid className="h-5 w-5" />
+              </div>
+              <div className="flex-grow">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm font-medium text-gray-700">Admin Dashboard</span>
+                  <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                    Online
+                  </span>
+                </div>
+                <div className="text-xs text-gray-500 mt-1">
+                  All systems operational
+                </div>
+              </div>
             </div>
-            <div className="pt-3 text-xs text-gray-500">
-              <p>Note: Limited database functionality means the system is operating with fallback mechanisms enabled.</p>
+            
+            <div className="bg-blue-50 p-3 rounded-md mt-4 text-xs text-blue-700">
+              <p className="font-medium mb-1">Note:</p>
+              <p>Limited database functionality means the system is operating with fallback mechanisms enabled. 
+              Some features may use cached data.</p>
             </div>
           </div>
         </Card>
