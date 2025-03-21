@@ -17,10 +17,18 @@ export default function Categories() {
     try {
       setLoading(true);
       const data = await fetchCategories();
-      setCategories(data);
-      setError(null);
+      
+      if (data) {
+        setCategories(Array.isArray(data) ? data : []);
+        setError(null);
+      } else {
+        console.warn('No category data received from API');
+        setCategories([]);
+        setError('Failed to load categories. The API server might be unavailable.');
+      }
     } catch (err) {
       console.error('Failed to load categories:', err);
+      setCategories([]);
       setError('Failed to load categories. Please try again later.');
     } finally {
       setLoading(false);
@@ -59,10 +67,11 @@ export default function Categories() {
           <h1 className="text-2xl font-bold text-gray-900">Categories</h1>
           <p className="text-gray-600 mt-1">Manage your menu categories</p>
         </div>
-        <Link href="/categories/new">
-          <a className="btn btn-primary flex items-center">
-            <FiPlus className="mr-2" /> Add New
-          </a>
+        <Link 
+          href="/categories/new"
+          className="btn btn-primary flex items-center"
+        >
+          <FiPlus className="mr-2" /> Add New
         </Link>
       </div>
 
@@ -90,8 +99,11 @@ export default function Categories() {
         ) : categories.length === 0 ? (
           <div className="text-center py-8">
             <p className="text-gray-500 mb-4">No categories found</p>
-            <Link href="/categories/new">
-              <a className="btn btn-primary">Add your first category</a>
+            <Link 
+              href="/categories/new"
+              className="btn btn-primary"
+            >
+              Add your first category
             </Link>
           </div>
         ) : (
@@ -130,10 +142,11 @@ export default function Categories() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex justify-end space-x-2">
-                        <Link href={`/categories/edit/${category._id}`}>
-                          <a className="text-blue-600 hover:text-blue-900">
-                            <FiEdit2 className="h-5 w-5" />
-                          </a>
+                        <Link 
+                          href={`/categories/edit/${category._id}`}
+                          className="text-blue-600 hover:text-blue-900"
+                        >
+                          <FiEdit2 className="h-5 w-5" />
                         </Link>
                         <button
                           onClick={() => handleDelete(category._id)}

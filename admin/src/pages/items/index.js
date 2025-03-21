@@ -30,25 +30,40 @@ export default function Items() {
         
         // Fetch categories first to build the lookup map
         const categoriesData = await fetchCategories();
-        setCategories(categoriesData);
-        
-        // Create a map for easy lookups
-        const catMap = {};
-        categoriesData.forEach(cat => {
-          catMap[cat.uniqId] = cat.name;
-        });
-        setCategoryMap(catMap);
+        if (categoriesData && Array.isArray(categoriesData)) {
+          setCategories(categoriesData);
+          
+          // Create a map for easy lookups
+          const catMap = {};
+          categoriesData.forEach(cat => {
+            if (cat && cat.uniqId) {
+              catMap[cat.uniqId] = cat.name || 'Unknown';
+            }
+          });
+          setCategoryMap(catMap);
+        } else {
+          console.warn('Categories data is not in expected format');
+          setCategories([]);
+          setCategoryMap({});
+        }
         
         // Fetch items based on active filter
         const itemsData = await fetchItems({ 
           activeOnly: showActiveOnly 
         });
-        setItems(itemsData);
         
-        setError(null);
+        if (itemsData && Array.isArray(itemsData)) {
+          setItems(itemsData);
+          setError(null);
+        } else {
+          console.warn('Items data is not in expected format');
+          setItems([]);
+          setError('Failed to load items in the expected format.');
+        }
       } catch (err) {
         console.error('Failed to load data:', err);
         setError('Failed to load items. The server might be unavailable.');
+        setItems([]);
       } finally {
         setLoading(false);
       }
@@ -67,11 +82,20 @@ export default function Items() {
           const itemsData = await fetchItems({ 
             activeOnly: showActiveOnly 
           });
-          setItems(itemsData);
-          setCurrentFilter(null);
+          
+          if (itemsData && Array.isArray(itemsData)) {
+            setItems(itemsData);
+            setCurrentFilter(null);
+            setError(null);
+          } else {
+            console.warn('Items data is not in expected format');
+            setItems([]);
+            setError('Failed to load items in the expected format.');
+          }
         } catch (err) {
           console.error('Failed to load items after search cleared:', err);
           setError('Failed to load items. Please try again.');
+          setItems([]);
         } finally {
           setLoading(false);
         }
@@ -83,11 +107,20 @@ export default function Items() {
         const searchResults = await searchItemsByName(searchTerm, {
           activeOnly: showActiveOnly
         });
-        setItems(searchResults);
-        setCurrentFilter({ type: 'search', value: searchTerm });
+        
+        if (searchResults && Array.isArray(searchResults)) {
+          setItems(searchResults);
+          setCurrentFilter({ type: 'search', value: searchTerm });
+          setError(null);
+        } else {
+          console.warn('Search results are not in expected format');
+          setItems([]);
+          setError('Failed to get search results in the expected format.');
+        }
       } catch (err) {
         console.error('Search failed:', err);
         setError('Failed to search items. Please try again.');
+        setItems([]);
       } finally {
         setLoading(false);
       }
@@ -124,11 +157,20 @@ export default function Items() {
     try {
       setLoading(true);
       const filteredItems = await fetchItemsByCategory(categoryUniqId, showActiveOnly);
-      setItems(filteredItems);
-      setCurrentFilter({ type: 'category', value: categoryUniqId });
+      
+      if (filteredItems && Array.isArray(filteredItems)) {
+        setItems(filteredItems);
+        setCurrentFilter({ type: 'category', value: categoryUniqId });
+        setError(null);
+      } else {
+        console.warn('Category filter results are not in expected format');
+        setItems([]);
+        setError('Failed to get category items in the expected format.');
+      }
     } catch (err) {
       console.error('Failed to filter by category:', err);
       setError('Failed to filter items. Please try again.');
+      setItems([]);
     } finally {
       setLoading(false);
     }
