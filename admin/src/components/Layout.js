@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { 
@@ -11,10 +11,21 @@ import {
   FiLogOut,
   FiLoader
 } from 'react-icons/fi';
+import { apiLoadingState } from '../lib/api';
 
 const Layout = ({ children }) => {
   const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isAnyApiLoading, setIsAnyApiLoading] = useState(false);
+  
+  // Subscribe to API loading state
+  useEffect(() => {
+    const unsubscribe = apiLoadingState.subscribe(() => {
+      setIsAnyApiLoading(apiLoadingState.isAnyLoading());
+    });
+    
+    return () => unsubscribe();
+  }, []);
 
   const navigation = [
     { name: 'Dashboard', href: '/', icon: FiHome },

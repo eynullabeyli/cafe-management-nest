@@ -3,9 +3,9 @@ const nextConfig = {
   reactStrictMode: true,
   transpilePackages: ['react-icons'],
   
-  // Add correct allowed dev origins pattern
+  // Add specific allowed dev origins to match the Replit domain
   experimental: {
-    allowedDevOrigins: ['*'],
+    allowedDevOrigins: ['*', 'https://*.repl.co', 'https://*.replit.dev', 'https://*.replit.app'],
   },
   
   // Proxy API requests to the NestJS server

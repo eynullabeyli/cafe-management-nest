@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
-import { fetchStats } from '../lib/api';
+import { fetchStats, apiLoadingState } from '../lib/api';
 import Card from '../components/Card';
-import { FiCoffee, FiGrid, FiPlusCircle, FiTrendingUp, FiTag } from 'react-icons/fi';
+import { FiCoffee, FiGrid, FiPlusCircle, FiTrendingUp, FiTag, FiLoader } from 'react-icons/fi';
 
 export default function Dashboard() {
   const [stats, setStats] = useState({
@@ -15,6 +15,17 @@ export default function Dashboard() {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [apiLoading, setApiLoading] = useState({});
+
+  // Subscribe to API loading state changes
+  useEffect(() => {
+    const unsubscribe = apiLoadingState.subscribe((loadingState) => {
+      setApiLoading(loadingState);
+    });
+    
+    // Cleanup subscription
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     async function loadStats() {

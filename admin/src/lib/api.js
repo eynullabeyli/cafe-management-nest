@@ -110,13 +110,21 @@ const extractData = (response) => {
 
 // Categories API functions
 export const fetchCategories = async (activeOnly = false) => {
+  const endpoint = 'categories';
+  
   try {
+    // Start loading
+    apiLoadingState.startLoading(endpoint);
+    
     const params = activeOnly ? { activeOnly: 'true' } : {};
     const response = await api.get('/categories', { params });
     console.log('Categories API response:', response.data);
     return extractData(response.data);
   } catch (error) {
-    handleApiError(error);
+    return handleApiError(error);
+  } finally {
+    // End loading regardless of success or failure
+    apiLoadingState.endLoading(endpoint);
   }
 };
 
@@ -172,7 +180,12 @@ export const deleteCategory = async (id) => {
 
 // Items API functions
 export const fetchItems = async (options = {}) => {
+  const endpoint = 'items';
+  
   try {
+    // Start loading
+    apiLoadingState.startLoading(endpoint);
+    
     const params = {};
     
     if (options.limit) params.limit = options.limit;
@@ -183,7 +196,10 @@ export const fetchItems = async (options = {}) => {
     console.log('Items API response:', response.data);
     return extractData(response.data);
   } catch (error) {
-    handleApiError(error);
+    return handleApiError(error);
+  } finally {
+    // End loading regardless of success or failure
+    apiLoadingState.endLoading(endpoint);
   }
 };
 
@@ -258,7 +274,12 @@ export const deleteItem = async (id) => {
 export const fetchStats = async () => {
   // This is a placeholder function for fetching dashboard stats
   // In a real application, this would call a dedicated endpoint
+  const endpoint = 'stats';
+  
   try {
+    // Start loading
+    apiLoadingState.startLoading(endpoint);
+    
     // Get categories and items via our fetch functions which now correctly extract data
     const [categories, items] = await Promise.all([
       fetchCategories().catch(() => []),
@@ -298,5 +319,8 @@ export const fetchStats = async () => {
       activeItems: 0,
       newItems: 0
     };
+  } finally {
+    // End loading regardless of success or failure
+    apiLoadingState.endLoading(endpoint);
   }
 };
