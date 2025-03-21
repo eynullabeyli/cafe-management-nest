@@ -255,7 +255,7 @@ export default function Dashboard() {
 
             <Link
               href="/items"
-              className="action-button bg-green-50 text-green-600 hover:bg-green-100 focus:ring-2 focus:ring-green-300 focus:ring-opacity-50"
+              className="action-button bg-green-50 text-green-600 hover:bg-green-100"
             >
               <FiCoffee className="h-4 w-4 transition-transform duration-200 group-hover:scale-110" />
               <span>Items</span>
@@ -263,7 +263,7 @@ export default function Dashboard() {
 
             <Link
               href="/items/new"
-              className="action-button bg-purple-50 text-purple-600 hover:bg-purple-100 focus:ring-2 focus:ring-purple-300 focus:ring-opacity-50"
+              className="action-button bg-purple-50 text-purple-600 hover:bg-purple-100"
             >
               <FiPlusCircle className="h-4 w-4 transition-transform duration-200 group-hover:rotate-90" />
               <span>New Item</span>
@@ -271,7 +271,7 @@ export default function Dashboard() {
 
             <Link
               href="/categories/new"
-              className="action-button bg-indigo-50 text-indigo-600 hover:bg-indigo-100 focus:ring-2 focus:ring-indigo-300 focus:ring-opacity-50"
+              className="action-button bg-indigo-50 text-indigo-600 hover:bg-indigo-100"
             >
               <FiTarget className="h-4 w-4 transition-transform duration-200 group-hover:scale-110" />
               <span>New Category</span>
