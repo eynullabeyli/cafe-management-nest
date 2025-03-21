@@ -168,6 +168,20 @@ export const updateCategory = async (id, categoryData) => {
   }
 };
 
+export const toggleCategoryActive = async (id, isActive) => {
+  const endpoint = `category-toggle-${id}`;
+  try {
+    apiLoadingState.startLoading(endpoint);
+    const response = await api.put(`/categories/${id}`, { isActive });
+    console.log('Toggle category active state response:', response.data);
+    return extractData(response.data);
+  } catch (error) {
+    return handleApiError(error);
+  } finally {
+    apiLoadingState.endLoading(endpoint);
+  }
+};
+
 export const deleteCategory = async (id) => {
   try {
     const response = await api.delete(`/categories/${id}`);

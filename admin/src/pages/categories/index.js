@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
-import { fetchCategories, deleteCategory } from '../../lib/api';
+import { fetchCategories, deleteCategory, toggleCategoryActive } from '../../lib/api';
 import Card from '../../components/Card';
 import Alert from '../../components/Alert';
 import { 
   FiPlus, FiEdit2, FiTrash2, FiCheck, FiX, 
-  FiGrid, FiFilter, FiRefreshCw, FiLayers 
+  FiGrid, FiFilter, FiRefreshCw, FiLayers,
+  FiToggleLeft, FiToggleRight
 } from 'react-icons/fi';
 
 export default function Categories() {
@@ -14,6 +15,7 @@ export default function Categories() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [deleteStatus, setDeleteStatus] = useState({ id: null, pending: false });
+  const [toggleStatus, setToggleStatus] = useState({ id: null, pending: false });
   const [successMessage, setSuccessMessage] = useState(null);
   const [filter, setFilter] = useState('all'); // 'all', 'active', 'inactive'
 
@@ -57,6 +59,27 @@ export default function Categories() {
       } finally {
         setDeleteStatus({ id: null, pending: false });
       }
+    }
+  };
+  
+  const handleToggleActive = async (id, currentActive) => {
+    try {
+      setToggleStatus({ id, pending: true });
+      await toggleCategoryActive(id, !currentActive);
+      
+      // Update the category in the local state to avoid a full reload
+      const updatedCategories = categories.map(category => 
+        category._id === id ? {...category, isActive: !currentActive} : category
+      );
+      setCategories(updatedCategories);
+      
+      setSuccessMessage(`Category ${!currentActive ? 'activated' : 'deactivated'} successfully.`);
+      setTimeout(() => setSuccessMessage(null), 3000);
+    } catch (err) {
+      console.error('Failed to toggle category status:', err);
+      setError('Failed to update category status. Please try again later.');
+    } finally {
+      setToggleStatus({ id: null, pending: false });
     }
   };
 
@@ -226,6 +249,30 @@ export default function Categories() {
                         </span>
                       </div>
                     </div>
+                    
+                    {/* Toggle switch for active/inactive status (only visible when 'all' filter is active) */}
+                    {filter === 'all' && (
+                      <div className="toggle-container">
+                        <span className="toggle-label">
+                          {category.isActive ? 'Category is active' : 'Category is inactive'}
+                        </span>
+                        <label className="toggle-switch">
+                          <input 
+                            type="checkbox"
+                            checked={category.isActive}
+                            onChange={() => handleToggleActive(category._id, category.isActive)}
+                            disabled={toggleStatus.pending && toggleStatus.id === category._id}
+                          />
+                          <span className="toggle-slider">
+                            {toggleStatus.pending && toggleStatus.id === category._id && (
+                              <div className="toggle-loading">
+                                <div className="spinner"></div>
+                              </div>
+                            )}
+                          </span>
+                        </label>
+                      </div>
+                    )}
                     
                     <div className="category-actions">
                       <Link 
