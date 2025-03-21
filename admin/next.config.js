@@ -5,7 +5,7 @@ const nextConfig = {
   
   // Add correct allowed dev origins pattern
   experimental: {
-    allowedDevOrigins: ['localhost', '.replit.dev'],
+    allowedDevOrigins: ['*'],
   },
   
   // Proxy API requests to the NestJS server
@@ -13,10 +13,13 @@ const nextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: 'http://localhost:5000/api/:path*',
+        destination: 'http://127.0.0.1:5000/api/:path*',
       },
     ];
   },
+  
+  // External hostname for external preview URLs
+  output: 'standalone',
 
   // Set header to allow all origins
   async headers() {

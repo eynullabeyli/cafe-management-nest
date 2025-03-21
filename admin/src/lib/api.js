@@ -3,13 +3,32 @@ import axios from 'axios';
 // Create an axios instance with base URL and default headers
 const isClient = typeof window !== 'undefined';
 
-// On the client-side, we'll use the relative URL to let Next.js handle rewrites
-// On the server-side, we'll use the absolute URL
+// Helper function to get API URL
+const getApiBaseUrl = () => {
+  // In Replit environment, we can construct the appropriate URL
+  if (isClient && window.location.hostname.includes('.replit.dev')) {
+    // Extract the Replit subdomain
+    const urlParts = window.location.hostname.split('.');
+    // Replace the port (3000) with the NestJS port (5000)
+    return `https://${urlParts[0]}-5000.${urlParts.slice(1).join('.')}/api`;
+  }
+  
+  // Default cases:
+  // On client-side: use relative URL to let Next.js handle rewrites
+  // On server-side: use environment variable or default localhost URL
+  return isClient 
+    ? '/api' 
+    : (process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000/api');
+};
+
+// Create the Axios instance
 const api = axios.create({
-  baseURL: isClient ? '/api' : (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'),
+  baseURL: getApiBaseUrl(),
   headers: {
     'Content-Type': 'application/json',
   },
+  // Add this to allow access to absolute URLs if needed in Replit
+  allowAbsoluteUrls: true,
 });
 
 // Error handler helper

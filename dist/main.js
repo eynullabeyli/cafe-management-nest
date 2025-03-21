@@ -29,7 +29,12 @@ async function bootstrap() {
         logger.log('Nest application created successfully');
         clearTimeout(timeout);
         appStarted = true;
-        app.enableCors();
+        app.enableCors({
+            origin: true,
+            methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+            credentials: true,
+            allowedHeaders: 'Authorization,Accept,Origin,DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range',
+        });
         logger.log('Setting global prefix...');
         app.setGlobalPrefix('api');
         logger.log('Applying global pipes, filters and interceptors...');
@@ -74,7 +79,12 @@ async function startMinimalAppWithoutDatabase() {
         bufferLogs: true,
     });
     app.useLogger(app.get(common_1.Logger));
-    app.enableCors();
+    app.enableCors({
+        origin: true,
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+        credentials: true,
+        allowedHeaders: 'Authorization,Accept,Origin,DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range',
+    });
     app.setGlobalPrefix('api');
     app.useGlobalFilters(new http_exception_filter_1.HttpExceptionFilter());
     app.useGlobalInterceptors(new transform_interceptor_1.TransformInterceptor());

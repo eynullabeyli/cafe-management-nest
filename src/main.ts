@@ -37,8 +37,13 @@ async function bootstrap() {
     clearTimeout(timeout);
     appStarted = true;
 
-    // Enable CORS
-    app.enableCors();
+    // Enable CORS with full configuration
+    app.enableCors({
+      origin: true, // Allow all origins
+      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+      credentials: true,
+      allowedHeaders: 'Authorization,Accept,Origin,DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range',
+    });
 
     // Set global prefix
     logger.log('Setting global prefix...');
@@ -100,8 +105,13 @@ async function startMinimalAppWithoutDatabase() {
   // Enable logs
   app.useLogger(app.get(Logger));
   
-  // Basic configuration
-  app.enableCors();
+  // Basic configuration with enhanced CORS
+  app.enableCors({
+    origin: true, // Allow all origins
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true,
+    allowedHeaders: 'Authorization,Accept,Origin,DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range',
+  });
   app.setGlobalPrefix('api');
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalInterceptors(new TransformInterceptor());
