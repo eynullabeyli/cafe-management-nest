@@ -8,7 +8,8 @@ import {
   FiGrid, 
   FiSettings, 
   FiX,
-  FiLogOut
+  FiLogOut,
+  FiLoader
 } from 'react-icons/fi';
 
 const Layout = ({ children }) => {
@@ -32,16 +33,23 @@ const Layout = ({ children }) => {
   const NavLink = ({ item }) => {
     const active = isActive(item.href);
     const Icon = item.icon;
+    const [isLinkLoading, setIsLinkLoading] = useState(false);
     
     return (
       <Link
         href={item.disabled ? '#' : item.href}
-        className={`nav-link ${active ? 'active' : ''} ${item.disabled ? 'disabled' : ''}`}
+        className={`nav-link ${active ? 'active' : ''} ${item.disabled ? 'disabled' : ''} ${isLinkLoading ? 'loading' : ''}`}
         onClick={(e) => {
           if (item.disabled) {
             e.preventDefault();
-          } else if (isMobileMenuOpen) {
-            setIsMobileMenuOpen(false);
+          } else {
+            // Set loading state and clear it after animation completes
+            setIsLinkLoading(true);
+            setTimeout(() => setIsLinkLoading(false), 1000);
+            
+            if (isMobileMenuOpen) {
+              setIsMobileMenuOpen(false);
+            }
           }
         }}
         style={{
@@ -56,9 +64,16 @@ const Layout = ({ children }) => {
           opacity: item.disabled ? 0.5 : 1,
           cursor: item.disabled ? 'default' : 'pointer',
           marginBottom: '0.25rem',
-          textDecoration: 'none'
+          textDecoration: 'none',
+          position: 'relative',
+          overflow: 'hidden'
         }}
       >
+        {isLinkLoading && !active && (
+          <div className="nav-link-loading">
+            <FiLoader className="nav-link-spinner" />
+          </div>
+        )}
         <Icon 
           style={{
             marginRight: '0.75rem',

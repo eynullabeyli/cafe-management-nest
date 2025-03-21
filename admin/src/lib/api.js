@@ -3,6 +3,49 @@ import axios from 'axios';
 // Create an axios instance with base URL and default headers
 const isClient = typeof window !== 'undefined';
 
+// API loading state manager (for tracking loading states across the app)
+export const apiLoadingState = {
+  // Track active requests by endpoint
+  activeRequests: {},
+  // Event listeners
+  listeners: [],
+  
+  // Start loading for a specific endpoint
+  startLoading: function(endpoint) {
+    this.activeRequests[endpoint] = true;
+    this.notifyListeners();
+  },
+  
+  // End loading for a specific endpoint
+  endLoading: function(endpoint) {
+    this.activeRequests[endpoint] = false;
+    this.notifyListeners();
+  },
+  
+  // Check if a specific endpoint is loading
+  isLoading: function(endpoint) {
+    return !!this.activeRequests[endpoint];
+  },
+  
+  // Check if any requests are loading
+  isAnyLoading: function() {
+    return Object.values(this.activeRequests).some(loading => loading);
+  },
+  
+  // Subscribe to changes
+  subscribe: function(listener) {
+    this.listeners.push(listener);
+    return () => {
+      this.listeners = this.listeners.filter(l => l !== listener);
+    };
+  },
+  
+  // Notify all listeners of a change
+  notifyListeners: function() {
+    this.listeners.forEach(listener => listener(this.activeRequests));
+  }
+};
+
 // Helper function to get API URL
 const getApiBaseUrl = () => {
   if (isClient) {
