@@ -244,7 +244,7 @@ export default function Dashboard() {
             </h3>
           </div>
 
-          <div className="flex" style={{ gap: '0.75rem' }}>
+          <div className="flex" style={{ gap: "0.75rem" }}>
             <Link
               href="/categories"
               className="action-button bg-blue-50 text-blue-600 hover:bg-blue-100"
@@ -280,7 +280,7 @@ export default function Dashboard() {
         </div>
       </div>
       {/* Data Visualizations Section */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-2 mb-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-6">
         {/* Menu Items Panel */}
         <div className="bg-white shadow-sm rounded-xl p-4">
           <div className="flex items-center justify-between mb-3">
@@ -466,70 +466,6 @@ export default function Dashboard() {
                 }}
               />
             )}
-          </div>
-        </div>
-
-        {/* System Status Panel */}
-        <div className="bg-white shadow-sm rounded-xl p-4">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="font-semibold text-gray-800">System Status</h3>
-          </div>
-
-          <div className="space-y-2">
-            <div className="flex items-center p-2 bg-gray-50 rounded-lg">
-              <div className="mr-2">
-                <div className="rounded-full bg-green-500 h-2 w-2"></div>
-              </div>
-              <div className="flex-1">
-                <div className="flex justify-between">
-                  <span className="font-medium text-xs text-gray-800">
-                    Admin Panel
-                  </span>
-                  <span className="text-green-600 text-xs font-medium">
-                    Online
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex items-center p-2 bg-gray-50 rounded-lg">
-              <div className="mr-2">
-                <div className="rounded-full bg-green-500 h-2 w-2"></div>
-              </div>
-              <div className="flex-1">
-                <div className="flex justify-between">
-                  <span className="font-medium text-xs text-gray-800">
-                    API Server
-                  </span>
-                  <span className="text-green-600 text-xs font-medium">
-                    Online
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex items-center p-2 bg-gray-50 rounded-lg">
-              <div className="mr-2">
-                <div className="rounded-full bg-yellow-500 h-2 w-2 pulse-animation"></div>
-              </div>
-              <div className="flex-1">
-                <div className="flex justify-between">
-                  <span className="font-medium text-xs text-gray-800">
-                    Database
-                  </span>
-                  <span className="text-yellow-600 text-xs font-medium">
-                    Limited
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-blue-50 p-2 rounded-lg mt-2">
-              <p className="text-xs text-blue-600">
-                <FiInfo className="inline-block mr-1 h-3 w-3" /> Using fallback
-                database
-              </p>
-            </div>
           </div>
         </div>
       </div>
