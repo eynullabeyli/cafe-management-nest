@@ -8,7 +8,8 @@ const nextConfig = {
   // Proxy API requests to the NestJS server 
   async rewrites() {
     // Use localhost which is more reliable in Replit
-    const nestJsHost = 'http://localhost:5005';
+    // const nestJsHost = 'http://localhost:5005';
+    const nestJsHost = process.env.NEXT_PUBLIC_API_URL;
     console.log('Using NestJS host:', nestJsHost);
       
     return [
