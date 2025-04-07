@@ -58,7 +58,9 @@ const getApiBaseUrl = () => {
   
   // On server-side in Next.js SSR context
   // This is important for getServerSideProps or API routes
-  return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5005/api';
+  // return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5005/api';
+  return process.env.NEXT_PUBLIC_API_URL;
+
 };
 
 // Create the Axios instance
