@@ -1,6 +1,10 @@
 # Rəsmi Next.js image-dən istifadə edirik
 FROM node:20-alpine
 
+# Build zamanı gələcək dəyişən
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+
 # İş qovluğu təyin edirik
 WORKDIR /app
 
