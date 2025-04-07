@@ -32,7 +32,7 @@ task = "packager.installForAll"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "npm install && npx nest start --watch"
-waitForPort = 5000
+waitForPort = 5005
 
 [[workflows.workflow]]
 name = "Admin Panel"
@@ -57,5 +57,5 @@ localPort = 3000
 externalPort = 3000
 
 [[ports]]
-localPort = 5000
+localPort = 5005
 externalPort = 80

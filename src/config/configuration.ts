@@ -4,7 +4,7 @@ export default () => {
   console.log('MONGODB_URI:', process.env.MONGODB_URI ? 'is set (value masked)' : 'not set (using default)');
   
   return {
-    port: parseInt(process.env.PORT, 10) || 5000,
+    port: parseInt(process.env.PORT, 10) || 5005,
     database: {
       uri: process.env.MONGODB_URI || 'mongodb://localhost/nest',
       // SSL/TLS options to help with connection issues

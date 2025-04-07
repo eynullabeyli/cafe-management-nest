@@ -90,7 +90,7 @@ async function bootstrap() {
 
     // Start server
     logger.log('Starting server...');
-    const port = process.env.PORT || 5000;
+    const port = process.env.PORT || 5005;
     await app.listen(port, '0.0.0.0');
     logger.log(`Application is running on: ${await app.getUrl()}`);
   } catch (error) {
@@ -167,7 +167,7 @@ async function startMinimalAppWithoutDatabase() {
   SwaggerModule.setup('api/docs', app, document);
 
   // Start the minimal server
-  const port = process.env.PORT || 5000;
+  const port = process.env.PORT || 5005;
   await app.listen(port, '0.0.0.0');
   logger.log(`Minimal application is running on port ${port}`);
 }
