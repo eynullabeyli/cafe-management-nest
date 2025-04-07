@@ -6,7 +6,7 @@ services:
     container_name: nestjs-backend
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "5005:5005"
     environment:
       - NODE_ENV=production
 
